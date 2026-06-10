@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import backgroundImage from './assets/background.webp'
+import backgroundImage from './assets/images/background.webp'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import RewardsList from './components/RewardsList'
@@ -38,7 +38,7 @@ function App() {
   )
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
+    <div className="flex h-full min-h-0 flex-col relative overflow-hidden">
       <img
         src={backgroundImage}
         alt=""
@@ -49,8 +49,9 @@ function App() {
       <Header />
       <Tagline />
 
-      <main className="flex flex-1 gap-6 px-[90px] pb-4 min-h-0 items-start justify-center">
+      <main className="flex min-h-0 flex-1 items-start justify-center gap-6 px-[90px] py-[clamp(0.5rem,2vh,1.5625rem)] max-[1200px]:gap-4 max-[1200px]:px-8">
         <RewardsList
+          className="h-[430px]"
           rewards={rewardsWithCounts}
           selectedRewardId={selectedRewardId}
           onSelectReward={setSelectedRewardId}
@@ -63,7 +64,7 @@ function App() {
           onSelectWinner={startDraw}
           onUploadFile={handleFileUpload}
         />
-        <WinnersTable winners={winners} onExport={exportWinners} />
+        <WinnersTable className="h-[400px]" winners={winners} onExport={exportWinners} />
       </main>
 
       <Footer />

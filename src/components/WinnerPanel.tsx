@@ -1,7 +1,7 @@
 import type { ChangeEvent } from 'react'
 import phoneDisplayBox from '../assets/images/phone-display-box.svg'
 import selectWinnerBtn from '../assets/images/select-winner-btn.svg'
-import prizePedestal from '../assets/images/prize-pedestal.svg'
+import prizePedestal from '../assets/images/prize-pedestal.webp'
 import uploadIcon from '../assets/images/upload-icon.svg'
 import type { DrawPhase, Reward } from '../types'
 
@@ -32,14 +32,14 @@ function WinnerPanel({
   const phoneText = formatPhoneDisplay(display, phase)
 
   return (
-    <section className="winner-panel flex-1 flex flex-col items-center min-w-0">
+    <section className="winner-panel flex h-full min-h-0 min-w-0 flex-1 flex-col items-center justify-center">
       <div className="w-[340px] bg-[#670105] h-[34px] flex items-center justify-center shrink-0">
-        <p className="font-ui font-bold text-base m-0 text-gradient-gold">
+        <p className="font-supreme-bold text-base m-0 bg-gradient-to-b from-[#ff8a04] to-[#fc0] bg-clip-text text-transparent">
           {selectedReward?.name ?? 'Select a reward'}
         </p>
       </div>
 
-      <div className="relative w-full flex justify-center mt-2 mb-1 h-[180px]">
+      <div className="relative mb-1 mt-2 flex h-[clamp(100px,16vh,180px)] w-full shrink-0 justify-center">
         <img
           src={prizePedestal}
           alt=""
@@ -50,14 +50,14 @@ function WinnerPanel({
           <img
             src={selectedReward.image}
             alt={selectedReward.name}
-            className="relative z-10 h-[120px] w-auto object-contain mt-6 drop-shadow-lg"
+            className="relative z-10 mt-6 h-[clamp(80px,14vh,150px)] w-auto object-contain drop-shadow-lg"
           />
         )}
       </div>
 
       <div className="flex flex-col items-center mt-2 w-full max-w-[550px]">
-        <p className="font-display text-xs text-gradient-label tracking-wide m-0 mb-1 uppercase">
-          WINNER&apos;S PHONE NUMBER
+        <p className="font-povlar text-sm bg-[linear-gradient(180deg,#FFFFFF_0%,#BDBDBD_100%)] italic bg-clip-text text-transparent tracking-wide pt-4 pb-2 mb-1 ">
+          WINNER&apos;s PHONE NUMBER
         </p>
 
         <div className="relative w-full max-w-[550px] h-[53px] flex items-center justify-center">
@@ -68,9 +68,7 @@ function WinnerPanel({
             aria-hidden="true"
           />
           <p
-            className={`relative z-10 font-display text-[clamp(1.5rem,3vw,2rem)] m-0 tracking-wider text-gradient-phone ${
-              phase === 'spinning' ? 'animate-pulse' : ''
-            }`}
+            className="relative z-10 font-povlar text-[clamp(1.25rem,2.5vw,1.75rem)] m-0 tracking-wider tabular-nums bg-[linear-gradient(172deg,#000_23%,#5d5d5d_77%)] bg-clip-text text-transparent"
             aria-live="polite"
             aria-label={`Phone number: ${phoneText}`}
           >
@@ -98,14 +96,14 @@ function WinnerPanel({
           className="absolute inset-0 w-full h-full pointer-events-none"
           aria-hidden="true"
         />
-        <span className="relative z-10 font-display text-xl text-gradient-btn pt-1">
+        <span className="relative z-10 italic font-povlar text-xl bg-gradient-to-b from-white to-[#d4d3d3] bg-clip-text text-transparent drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] pt-1">
           {isDrawing ? 'DRAWING...' : 'SELECT WINNER'}
         </span>
       </button>
 
       <label className="mt-4 flex items-center gap-3 bg-[#6e6e6e] px-3 py-2 rounded-[20px] shadow-md cursor-pointer hover:bg-[#5a5a5a] transition-colors">
         <img src={uploadIcon} alt="" className="w-5 h-5" aria-hidden="true" />
-        <span className="font-ui font-medium text-white text-base underline">
+        <span className="font-supreme-regular text-white text-base underline">
           Upload File
         </span>
         <input

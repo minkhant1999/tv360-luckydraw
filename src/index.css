@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Supreme";
+  src: url("./assets/fonts/Supreme-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Supreme";
+  src: url("./assets/fonts/Supreme-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Supreme";
+  src: url("./assets/fonts/Supreme-Extrabold.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Povlar";
+  src: url("./assets/fonts/povlar.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {
@@ -10,6 +42,7 @@ html,
 body,
 #root {
   margin: 0;
+  height: 100%;
   min-height: 100%;
   width: 100%;
 }
@@ -22,9 +55,10 @@ body {
 :root {
   --font-display: "Georgia", "Times New Roman", serif;
   --font-ui: "Segoe UI", system-ui, -apple-system, sans-serif;
-  --color-primary-red: #7a0513;
-  --color-accent-red: #ff2e33;
-  --color-gold: #ffc300;
+  --font-supreme-regular: "Supreme", var(--font-ui);
+  --font-supreme-bold: "Supreme", var(--font-ui);
+  --font-supreme-extrabold: "Supreme", var(--font-ui);
+  --font-povlar: "Povlar", var(--font-display);
 }
 
 .font-display {
@@ -37,118 +71,22 @@ body {
   font-family: var(--font-ui);
 }
 
-.text-gradient-title {
-  background: linear-gradient(172deg, #fff 36%, #aeacac 97%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 4px 4px rgba(255, 8, 14, 0.25))
-    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25))
-    drop-shadow(0 4px 12px rgba(255, 204, 0, 0.21));
+.font-supreme-regular {
+  font-family: var(--font-supreme-regular);
+  font-weight: 400;
 }
 
-.text-gradient-luckydraw {
-  background: linear-gradient(180deg, #ff2504, #fc0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.font-supreme-bold {
+  font-family: var(--font-supreme-bold);
+  font-weight: 700;
 }
 
-.text-gradient-gold {
-  background: linear-gradient(180deg, #ff8a04, #fc0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.font-supreme-extrabold {
+  font-family: var(--font-supreme-extrabold);
+  font-weight: 800;
 }
 
-.text-gradient-label {
-  background: linear-gradient(180deg, #fff, #bdbdbd);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.text-gradient-phone {
-  background: linear-gradient(172deg, #000 23%, #5d5d5d 77%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.text-gradient-btn {
-  background: linear-gradient(180deg, #fff, #d4d3d3);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
-}
-
-.drop-shadow-title {
-  text-shadow:
-    0 4px 4px rgba(255, 8, 14, 0.25),
-    0 2px 6px rgba(0, 0, 0, 0.25);
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.winners-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: #ff9585 #701e11;
-}
-
-.winners-scroll::-webkit-scrollbar {
-  width: 4px;
-}
-
-.winners-scroll::-webkit-scrollbar-track {
-  background: #701e11;
-  border-radius: 4px;
-}
-
-.winners-scroll::-webkit-scrollbar-thumb {
-  background: #ff9585;
-  border-radius: 4px;
-}
-
-.reward-item:focus-visible .reward-item__card {
-  outline: 2px solid #ffc300;
-  outline-offset: 2px;
-}
-
-.rewards-list .overflow-y-auto {
-  scrollbar-width: thin;
-  scrollbar-color: #ff2e33 #7a0513;
-}
-
-.rewards-list .overflow-y-auto::-webkit-scrollbar {
-  width: 4px;
-}
-
-.rewards-list .overflow-y-auto::-webkit-scrollbar-thumb {
-  background: #ff2e33;
-  border-radius: 4px;
-}
-
-@media (max-width: 1200px) {
-  main {
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-    gap: 1rem !important;
-  }
-
-  header,
-  footer > div {
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-  }
+.font-povlar {
+  font-family: var(--font-povlar);
+  font-weight: 400;
 }
