@@ -1,0 +1,96 @@
+---
+description: TV360 Lucky Draw layout and visual design from Figma
+globs: src/**/*.{jsx,tsx,css}
+alwaysApply: false
+---
+
+# TV360 Lucky Draw — Design System
+
+**Figma source:** [HOME screen](https://www.figma.com/design/gHuCWVdmvHEAG3fQDCWaol/Untitled?node-id=2-755&m=dev)
+
+Stack: React + Vite + Tailwind CSS v4. Use a full-page vertical layout with a stadium background image. Do not use absolute pixel positioning from Figma — use flex/grid and responsive spacing.
+
+## Page Structure (4 Divisions)
+
+```
+┌─────────────────────────────────────────┐
+│ 1. HEADER                               │
+├─────────────────────────────────────────┤
+│ 2. TAGLINE (centered)                   │
+├──────────────────┬──────────────────────┤
+│ 3a. Rewards List │ 3b. Winner Panel     │
+├──────────────────┴──────────────────────┤
+│ 4. FOOTER                               │
+└─────────────────────────────────────────┘
+```
+
+### Division 1 — Header
+- Top-left: **TV360 Myanmar logo** then **FIFA World Cup logo** side by side
+- Fixed height, horizontal padding ~90px from left edge
+- No centered content in this row
+
+### Division 2 — Tagline
+- Horizontally centered
+- Main title: **"LUCKY 360 CUP"** — large italic display text with white-to-grey gradient and gold/red glow
+- Subtitle: campaign dates (e.g. `12 June 2026 to 20 July 2026`) in white
+- Accent: **"LuckyDraw"** in gold-to-red gradient script style, right of dates
+
+### Division 3 — Main Content (two columns)
+
+**Left column — Rewards list**
+- Dark red card (`#7a0513`) with `border-[#ff2e33]`, `rounded-xl`, drop shadow
+- Card header bar (`#61030e`): **"LUCKY 360 CUP PROMOTION CAMPAIGN REWARDS"**
+- Hint text: *"Click the item you want to draw"* in `#c7bebe`
+- Scrollable list of reward items; each item shows: thumbnail, prize name, quantity (`0/1`)
+- Selected item: `border-2 border-[#ffc300]` gold highlight; unselected: white bg, `border-[#b2020d]`
+
+**Right column — Winner panel**
+- Prize name bar: dark red bg (`#670105`), gold gradient text (`#ff8a04` → `#fc0`)
+- Prize image: centered, prominent product visual on glowing pedestal
+- Label: **"WINNER'S PHONE NUMBER"** — small caps, white-to-grey gradient
+- Phone display: large bold placeholder (`09xxxxxxxxx`) in dark gradient text inside a styled input/display box
+- **SELECT WINNER** button: glossy red pill with gold trim, white gradient text
+- **Upload File** button: grey pill (`#6e6e6e`), white underlined text, upload icon — accepts Excel
+
+### Division 4 — Footer
+- Full-width red bar at bottom
+- Left: **WORLD CUP PACKAGES** + package icons
+- Center: *"Catch Every Match LIVE from Start to Finish on TV360"*
+- Right: QR code + website link (`tv360.mytel.com.mm/app`)
+
+## Design Tokens
+
+| Token | Value |
+|-------|-------|
+| Primary red | `#7a0513`, `#670105`, `#61030e`, `#b2020d` |
+| Accent red | `#ff2e33`, `#ff2504` |
+| Gold | `#ffc300`, `#fc0`, `#ff8a04` |
+| Text primary | `white` |
+| Text muted | `#c7bebe`, `#8d8c8c` |
+| Text dark | `#232323` |
+| Upload btn | `#6e6e6e` |
+
+**Fonts:** `Povlar Slant` for display titles and buttons; `Supreme` (Regular/Medium/Bold/Extrabold) for UI labels and reward items. Load via project assets or `@font-face`.
+
+## Component Guidelines
+
+- Extract sections as components: `Header`, `Tagline`, `RewardsList`, `WinnerPanel`, `Footer`
+- Reward selection is interactive — clicking a list item updates the right panel (prize name + image)
+- Use semantic HTML (`header`, `main`, `footer`, `button`) and accessible labels on all buttons
+- Background image covers full viewport; content sits above it with appropriate z-index
+
+```jsx
+// ✅ GOOD — semantic 4-division layout
+<div className="min-h-screen flex flex-col bg-cover bg-center">
+  <header className="flex items-center gap-4 px-[90px] py-6">...</header>
+  <section className="text-center">...</section>
+  <main className="flex flex-1 gap-8 px-[90px]">
+    <RewardsList />
+    <WinnerPanel />
+  </main>
+  <footer className="bg-[#7a0513] flex items-center justify-between px-[90px] py-4">...</footer>
+</div>
+
+// ❌ BAD — flat single div, no division structure
+<div><img /><h1 /><ul /><button /></div>
+```
