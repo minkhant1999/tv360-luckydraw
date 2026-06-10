@@ -16,7 +16,7 @@ function Footer() {
         <img
           src={wcPackages}
           alt="World Cup Packages"
-          className="h-[clamp(96px,18vh,180px)] w-auto shrink-0 -translate-y-3 object-contain object-left-bottom"
+          className="h-[clamp(130px,26vh,240px)] w-auto shrink-0 -translate-y-3 object-contain object-left-bottom"
         />
         <img
           src={subTagEng}
