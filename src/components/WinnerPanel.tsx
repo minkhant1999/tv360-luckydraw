@@ -7,8 +7,8 @@ import type { DrawPhase, Reward } from '../types'
 
 const PHONE_MASK = '09xxxxxxxxx'
 
-function formatPhoneDisplay(digits: string, phase: DrawPhase): string { 
-  if (phase === 'idle') return PHONE_MASK 
+function formatPhoneDisplay(digits: string, phase: DrawPhase): string {
+  if (phase === 'idle') return PHONE_MASK
   return `09${digits}`
 }
 
@@ -32,7 +32,7 @@ function WinnerPanel({
   const phoneText = formatPhoneDisplay(display, phase)
 
   return (
-    <section className="winner-panel flex h-full min-h-0 min-w-0 flex-1 flex-col items-center justify-center">
+    <section className="winner-panel flex min-w-0 flex-1 flex-col items-center">
       <div className="w-[340px] bg-[#670105] h-[34px] flex items-center justify-center shrink-0">
         <p className="font-supreme-bold text-base m-0 bg-gradient-to-b from-[#ff8a04] to-[#fc0] bg-clip-text text-transparent">
           {selectedReward?.name ?? 'Select a reward'}
