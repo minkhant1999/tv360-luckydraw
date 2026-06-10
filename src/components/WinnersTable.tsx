@@ -16,7 +16,7 @@ interface WinnersTableProps {
 function WinnersTable({ winners, onExport }: WinnersTableProps) {
   const [activeTab, setActiveTab] = useState<WinnerType>('weekly')
 
-  const filteredWinners = winners.filter((w) => w.type === activeTab)
+  const filteredWinners = winners.filter((w) => w.type === activeTab) 
 
   return (
     <aside className="winners-table shrink-0 w-[295px]">

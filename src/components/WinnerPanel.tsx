@@ -7,8 +7,8 @@ import type { DrawPhase, Reward } from '../types'
 
 const PHONE_MASK = '09xxxxxxxxx'
 
-function formatPhoneDisplay(digits: string, phase: DrawPhase): string {
-  if (phase === 'idle') return PHONE_MASK
+function formatPhoneDisplay(digits: string, phase: DrawPhase): string { 
+  if (phase === 'idle') return PHONE_MASK 
   return `09${digits}`
 }
 

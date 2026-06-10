@@ -89,14 +89,15 @@ export function useLuckyDraw(selectedReward: Reward) {
       setDisplay(MASK)
       setRevealedCount(0)
 
-      const phone = selected.phone
+      const phone = selected.phone // this one need to bind api winner phone number
+      // const phone = '781211763'
       let revealed = 0
 
       revealIntervalRef.current = setInterval(() => {
         revealed += 1
         const maskLength = DIGIT_COUNT - revealed
         const revealedPart = phone.slice(-revealed)
-        const maskedPart = 'x'.repeat(maskLength)
+        const maskedPart = 'x'.repeat(maskLength) 
         setDisplay(maskedPart + revealedPart)
         setRevealedCount(revealed)
 
