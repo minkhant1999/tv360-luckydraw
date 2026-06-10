@@ -1,5 +1,5 @@
-import tv360Logo from '../assets/images/tv360-logo.webp'
-import wcLogo from '../assets/images/wc-logo.webp'
+import tv360Logo from "../assets/images/tv360-logo.webp";
+import wcLogo from "../assets/images/wc-logo.webp";
 
 function Header() {
   return (
@@ -15,7 +15,6 @@ function Header() {
         className="h-[82px] w-[53px] object-contain"
       />
     </header>
-  )
+  );
 }
-
-export default Header
+export default Header;
