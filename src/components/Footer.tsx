@@ -5,35 +5,31 @@ import qrCode from '../assets/images/qr-code.webp'
 
 function Footer() {
   return (
-    <footer className="relative shrink-0 w-full h-[103px] mt-auto">
+    <footer className="relative mt-auto h-[clamp(72px,10vh,103px)] w-full shrink-0 overflow-visible">
       <img
         src={footerBar}
         alt=""
         className="absolute inset-0 w-full h-full object-cover"
         aria-hidden="true"
       />
-      <div className="relative z-10 flex items-center justify-between h-full px-[90px]">
+      <div className="relative z-10 flex h-full items-end justify-between px-[90px] max-[1200px]:px-8">
         <img
           src={wcPackages}
           alt="World Cup Packages"
-          className="h-[69px] w-auto object-contain"
+          className="h-[clamp(96px,18vh,180px)] w-auto shrink-0 -translate-y-3 object-contain object-left-bottom"
         />
         <img
           src={subTagEng}
           alt="Catch Every Match LIVE from Start to Finish on TV360"
-          className="h-[47px] w-auto object-contain"
+          className="mb-7 h-[clamp(36px,5vh,55px)] w-auto object-contain"
         />
-        <div className="flex items-center gap-3">
+        <div className="mb-4 flex items-center gap-3">
           <img
             src={qrCode}
             alt="QR code for tv360.mytel.com.mm/app"
-            className="h-[55px] w-auto object-contain"
+            className="mb-2 h-[clamp(40px,6vh,56px)] w-auto object-contain"
           />
-          <p className="font-ui text-white text-xs m-0 leading-snug">
-            Website Link:
-            <br />
-            tv360.mytel.com.mm/app
-          </p>
+
         </div>
       </div>
     </footer>

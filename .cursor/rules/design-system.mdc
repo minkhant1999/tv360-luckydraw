@@ -10,6 +10,8 @@ alwaysApply: false
 
 Stack: React + Vite + Tailwind CSS v4. Use a full-page vertical layout with a stadium background image. Do not use absolute pixel positioning from Figma — use flex/grid and responsive spacing.
 
+**Styling rule:** Use Tailwind utility classes in components for all visual styling (colors, borders, gradients, shadows, scrollbars, responsive layout). Only declare **fonts** in `src/index.css` (`@font-face` + `.font-*` classes). Do not add other custom CSS classes to `index.css`.
+
 ## Page Structure (4 Divisions)
 
 ```
@@ -39,15 +41,15 @@ Stack: React + Vite + Tailwind CSS v4. Use a full-page vertical layout with a st
 
 **Left column — Rewards list**
 - Dark red card (`#7a0513`) with `border-[#ff2e33]`, `rounded-xl`, drop shadow
-- Card header bar (`#61030e`): **"LUCKY 360 CUP PROMOTION CAMPAIGN REWARDS"**
-- Hint text: *"Click the item you want to draw"* in `#c7bebe`
-- Scrollable list of reward items; each item shows: thumbnail, prize name, quantity (`0/1`)
-- Selected item: `border-2 border-[#ffc300]` gold highlight; unselected: white bg, `border-[#b2020d]`
+- Card header bar (`#61030e`): **"LUCKY 360 CUP PROMOTION CAMPAIGN REWARDS"**, **Supreme Extrabold** via `.font-supreme-extrabold`
+- Hint text: *"Click the item you want to draw"* in `#c7bebe`, **Supreme Regular** via `.font-supreme-regular`
+- Scrollable list of reward items; each item shows: overlapping thumbnail on the left, prize name, quantity (`0/1`)
+- Selected item: 2.28px radial gradient border (`#ffc400` → `#ff080e`); yellow left glow `linear-gradient(268.84deg, transparent, #F9C723)` behind thumbnail; unselected: `border border-solid border-[#b2020d]`
 
 **Right column — Winner panel**
-- Prize name bar: dark red bg (`#670105`), gold gradient text (`#ff8a04` → `#fc0`)
+- Prize name bar: dark red bg (`#670105`), gold gradient text (`#ff8a04` → `#fc0`), **Supreme Bold** via `.font-supreme-bold`
 - Prize image: centered, prominent product visual on glowing pedestal
-- Label: **"WINNER'S PHONE NUMBER"** — small caps, white-to-grey gradient
+- Label: **"WINNER'S PHONE NUMBER"** — small caps, **Povlar** via `.font-povlar`, white-to-grey gradient (`#FFFFFF` → `#BDBDBD`)
 - Phone display: large bold placeholder (`09xxxxxxxxx`) in dark gradient text inside a styled input/display box
 - **SELECT WINNER** button: glossy red pill with gold trim, white gradient text
 - **Upload File** button: grey pill (`#6e6e6e`), white underlined text, upload icon — accepts Excel
@@ -70,13 +72,52 @@ Stack: React + Vite + Tailwind CSS v4. Use a full-page vertical layout with a st
 | Text dark | `#232323` |
 | Upload btn | `#6e6e6e` |
 
-**Fonts:** `Povlar Slant` for display titles and buttons; `Supreme` (Regular/Medium/Bold/Extrabold) for UI labels and reward items. Load via project assets or `@font-face`.
+**Fonts:** Declare all custom fonts once in `src/index.css` via `@font-face` and `.font-*` utility classes — do not import font files in components.
+
+| Class | Font | Use for |
+|-------|------|---------|
+| `.font-display` | Georgia (fallback) | Legacy display text until migrated to Povlar |
+| `.font-povlar` | Povlar (`povlar.otf`) | Winner panel phone number label |
+| `.font-ui` | Segoe UI stack | General UI labels, lists, footer |
+| `.font-supreme-regular` | Supreme Regular (`Supreme-Regular.ttf`) | Rewards list hint text |
+| `.font-supreme-bold` | Supreme Bold (`Supreme-Bold.otf`) | Winner panel prize name bar |
+| `.font-supreme-extrabold` | Supreme Extrabold (`Supreme-Extrabold.otf`) | Rewards list card header |
+
+Available assets: `src/assets/fonts/povlar.otf`, `Supreme-Regular.ttf`, `Supreme-Bold.otf`, `Supreme-Extrabold.otf`. Add other weights here when provided.
+
+**Tailwind patterns** (use inline in components, not global CSS):
+
+```jsx
+// Gold gradient text
+className="bg-gradient-to-b from-[#ff8a04] to-[#fc0] bg-clip-text text-transparent"
+
+// Label gradient text (180deg white → grey)
+className="bg-[linear-gradient(180deg,#FFFFFF_0%,#BDBDBD_100%)] bg-clip-text text-transparent"
+
+// Text stroke accent
+className="[-webkit-text-stroke:1px_#ff080e] [paint-order:stroke_fill]"
+
+// Selected reward item — overlapping image + gradient border + left glow
+<button className="relative ...">
+  <img className="absolute left-0 z-20 ..." /> {/* overlaps card */}
+  <div className="ml-[28px] rounded-lg p-[2.28px] bg-[radial-gradient(...)]">
+    <div className="relative rounded-lg bg-white pl-[34px] ...">
+      <div className="absolute inset-y-0 left-0 w-[46px] bg-[linear-gradient(to_right,#F9C723_0%,rgba(249,199,35,0.45)_55%,rgba(249,199,35,0)_100%)]" />
+      ...
+    </div>
+  </div>
+</button>
+
+// Responsive page padding (< 1200px)
+className="px-[90px] max-[1200px]:px-8"
+```
 
 ## Component Guidelines
 
 - Extract sections as components: `Header`, `Tagline`, `RewardsList`, `WinnerPanel`, `Footer`
 - Reward selection is interactive — clicking a list item updates the right panel (prize name + image)
 - Use semantic HTML (`header`, `main`, `footer`, `button`) and accessible labels on all buttons
+- Style with Tailwind classes directly on elements — avoid adding non-font rules to `index.css`
 - Background image covers full viewport; content sits above it with appropriate z-index
 
 ```jsx
