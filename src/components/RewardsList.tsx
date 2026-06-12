@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import selectedArrow from '../assets/images/selected-arrow.svg'
 import type { Reward, RewardId } from '../types'
 
@@ -8,33 +9,49 @@ interface RewardItemProps {
 }
 
 function RewardItem({ reward, isSelected, onSelect }: RewardItemProps) {
+  const [disableSelect, _setDisableSelect] = useState<boolean>(true)
+
   return (
     <button
       type="button"
+      disabled={disableSelect}
       onClick={() => onSelect(reward.id)}
-      className="group relative w-full min-h-[65px] border-0 bg-transparent cursor-pointer pr-3 text-left "
+      className={`group relative w-full min-h-[65px] border-0 bg-transparent pr-3 text-left ${
+        disableSelect ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+      }`}
       aria-pressed={isSelected}
+      aria-disabled={disableSelect}
       aria-label={`Select ${reward.name}`}
     >
       <div className="pointer-events-none absolute left-1.5 top-[31px] z-20 flex h-[60px] w-[60px] -translate-y-1/2 items-center justify-center">
         <img
           src={reward.image}
           alt=""
-          className="h-[62px] w-[64px] object-contain drop-shadow-md"
+          className={`h-[62px] w-[64px] object-contain drop-shadow-md ${
+            disableSelect ? 'grayscale' : ''
+          }`}
         />
       </div>
 
       <div
-        className={`ml-[28px] flex-1 ${isSelected
-          ? 'rounded-xl p-[2.28px] bg-[radial-gradient(ellipse_32%_22%_at_50%_0%,#ffc400_0%,#ff080e_62%,#ff080e_100%)]'
-          : ''
-          }`}
+        className={`ml-[28px] flex-1 ${
+          isSelected && !disableSelect
+            ? 'rounded-xl p-[2.28px] bg-[radial-gradient(ellipse_32%_22%_at_50%_0%,#ffc400_0%,#ff080e_62%,#ff080e_100%)]'
+            : ''
+        }`}
       >
         <div
-          className={`relative flex min-h-[56px] items-center justify-between overflow-hidden rounded-xl bg-white py-2 pl-[34px] pr-3 group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:outline-[#ffc300] group-focus-visible:outline-offset-2 ${!isSelected ? 'border border-solid border-[#b2020d]' : ''
-            }`}
+          className={`relative flex min-h-[56px] items-center justify-between overflow-hidden rounded-xl py-2 pl-[34px] pr-3 ${
+            disableSelect
+              ? 'border border-solid border-[#d9d9d9] bg-[#f5f5f5]'
+              : `bg-white ${
+                  !isSelected
+                    ? 'border border-solid border-[#b2020d]'
+                    : ''
+                } group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:outline-[#ffc300] group-focus-visible:outline-offset-2`
+          }`}
         >
-          {isSelected && (
+          {isSelected && !disableSelect && (
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-y-0 left-0 w-[42px] bg-[linear-gradient(to_right,#F9C723_0%,rgba(249,199,35,0.45)_55%,rgba(249,199,35,0)_100%)]"
@@ -42,16 +59,25 @@ function RewardItem({ reward, isSelected, onSelect }: RewardItemProps) {
           )}
           <div className="relative z-10 min-w-0 flex-1 left-2">
             <p
-              className={`font-supreme-bold text-sm m-0 leading-tight ${isSelected ? 'text-[#ae1700]' : 'text-[#232323]'
-                }`}
+              className={`font-supreme-bold text-sm m-0 leading-tight ${
+                disableSelect
+                  ? 'text-[#a0a0a0]'
+                  : isSelected
+                    ? 'text-[#ae1700]'
+                    : 'text-[#232323]'
+              }`}
             >
               {reward.name}
             </p>
-            <p className="font-ui font-medium text-[11px] text-[#8d8c8c] m-0 mt-0.5">
+            <p
+              className={`font-ui font-medium text-[11px] m-0 mt-0.5 ${
+                disableSelect ? 'text-[#bdbdbd]' : 'text-[#8d8c8c]'
+              }`}
+            >
               {reward.drawn}/{reward.quantity}
             </p>
           </div>
-          {isSelected && (
+          {isSelected && !disableSelect && (
             <img
               src={selectedArrow}
               alt=""
