@@ -1,16 +1,14 @@
-import { useState } from 'react'
 import selectedArrow from '../assets/images/selected-arrow.svg'
 import type { Reward, RewardId } from '../types'
 
 interface RewardItemProps {
   reward: Reward
   isSelected: boolean
+  disableSelect: boolean
   onSelect: (id: RewardId) => void
 }
 
-function RewardItem({ reward, isSelected, onSelect }: RewardItemProps) {
-  const [disableSelect, _setDisableSelect] = useState<boolean>(true)
-
+function RewardItem({ reward, isSelected, disableSelect, onSelect }: RewardItemProps) {
   return (
     <button
       type="button"
@@ -95,10 +93,19 @@ interface RewardsListProps {
   rewards: Reward[]
   selectedRewardId: RewardId
   onSelectReward: (id: RewardId) => void
+  disableSelect?: boolean
+  isLoading?: boolean
   className?: string
 }
 
-function RewardsList({ rewards, selectedRewardId, onSelectReward, className }: RewardsListProps) {
+function RewardsList({
+  rewards,
+  selectedRewardId,
+  onSelectReward,
+  disableSelect = true,
+  isLoading = false,
+  className,
+}: RewardsListProps) {
   return (
     <aside className="w-[333px] shrink-0">
       <div className={`flex flex-col overflow-hidden rounded-xl border border-[#ff2e33] bg-[#7a0513] shadow-[1px_4px_24px_rgba(0,0,0,0.25)] ${className ?? 'h-[430px]'}`}>
@@ -111,14 +118,21 @@ function RewardsList({ rewards, selectedRewardId, onSelectReward, className }: R
           Click the item you want to draw
         </p>
         <div className="flex-1 overflow-y-auto px-3 pb-3 flex flex-col gap-2 [scrollbar-width:thin] [scrollbar-color:#ff2e33_#7a0513] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded [&::-webkit-scrollbar-thumb]:bg-[#ff2e33]">
-          {rewards.map((reward) => (
-            <RewardItem
-              key={reward.id}
-              reward={reward}
-              isSelected={selectedRewardId === reward.id}
-              onSelect={onSelectReward}
-            />
-          ))}
+          {isLoading ? (
+            <p className="font-supreme-regular text-[#c7bebe] text-[13px] text-center m-0 py-4">
+              Loading rewards...
+            </p>
+          ) : (
+            rewards.map((reward) => (
+              <RewardItem
+                key={reward.id}
+                reward={reward}
+                isSelected={selectedRewardId === reward.id}
+                disableSelect={disableSelect}
+                onSelect={onSelectReward}
+              />
+            ))
+          )}
         </div>
       </div>
     </aside>

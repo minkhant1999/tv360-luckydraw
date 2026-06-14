@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import backgroundImage from './assets/images/background.webp'
 import Footer from './components/Footer'
 import Header from './components/Header'
@@ -8,34 +8,52 @@ import WinnerPanel from './components/WinnerPanel'
 import WinnersTable from './components/WinnersTable'
 import { rewards as rewardsData } from './data/rewards'
 import { useLuckyDraw } from './hooks/useLuckyDraw'
+import { useGetPrizesQuery } from './store/api/luckyDrawApi'
 import type { RewardId } from './types'
+import { mapPrizesToRewards } from './utils/mapPrizesToRewards'
 
 function App() {
   const [selectedRewardId, setSelectedRewardId] = useState<RewardId>(rewardsData[0].id)
-  const selectedReward = useMemo(
-    () => rewardsData.find((r) => r.id === selectedRewardId) ?? rewardsData[0],
-    [selectedRewardId],
+  const [isRewardsEnabled, setIsRewardsEnabled] = useState(false)
+
+  const { data: prizesResponse, isLoading: isPrizesLoading } = useGetPrizesQuery(
+    { prizeType: 'WEEKLY' },
+    { skip: !isRewardsEnabled },
   )
+
+  const apiRewards = useMemo(() => {
+    if (!prizesResponse?.success) return []
+    return mapPrizesToRewards(prizesResponse.result)
+  }, [prizesResponse])
+
+  useEffect(() => {
+    if (apiRewards[0]) {
+      setSelectedRewardId(apiRewards[0].id)
+    }
+  }, [apiRewards])
+
+  const selectedReward = useMemo(() => {
+    const rewards = apiRewards.length > 0 ? apiRewards : rewardsData
+    return rewards.find((r) => r.id === selectedRewardId) ?? rewards[0]
+  }, [apiRewards, selectedRewardId])
 
   const {
     phase,
     display,
     winners,
     startDraw,
-    handleFileUpload,
     exportWinners,
     getDrawnCount,
     isDrawing,
   } = useLuckyDraw(selectedReward)
 
-  const rewardsWithCounts = useMemo(
-    () =>
-      rewardsData.map((reward) => ({
-        ...reward,
-        drawn: getDrawnCount(reward.id, reward.drawn),
-      })),
-    [getDrawnCount],
-  )
+  const rewardsWithCounts = useMemo(() => {
+    const rewards = apiRewards.length > 0 ? apiRewards : rewardsData
+    return rewards.map((reward) => ({
+      ...reward,
+      drawn: getDrawnCount(reward.id, reward.drawn),
+    }))
+  }, [apiRewards, getDrawnCount])
 
   return (
     <div className="flex h-full min-h-0 flex-col relative overflow-hidden">
@@ -55,14 +73,17 @@ function App() {
           rewards={rewardsWithCounts}
           selectedRewardId={selectedRewardId}
           onSelectReward={setSelectedRewardId}
+          disableSelect={!isRewardsEnabled || isPrizesLoading}
+          isLoading={isPrizesLoading}
         />
         <WinnerPanel
           selectedReward={selectedReward}
           display={display}
           phase={phase}
           isDrawing={isDrawing}
+          isRewardsEnabled={isRewardsEnabled && !isPrizesLoading}
           onSelectWinner={startDraw}
-          onUploadFile={handleFileUpload}
+          onImportSuccess={() => setIsRewardsEnabled(true)}
         />
         <WinnersTable className="h-[400px]" winners={winners} onExport={exportWinners} />
       </main>

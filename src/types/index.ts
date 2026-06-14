@@ -52,6 +52,36 @@ export interface LoginResponse {
   result: LoginResult
 }
 
+export interface Prize {
+  id: number
+  prizeName: string
+  quantity: number
+  prizeType: WinnerType
+  prizeCode: string
+}
+
+export interface PrizesResponse {
+  code: string
+  message: string
+  result: Prize[]
+  success: boolean
+}
+
+export interface ImportUsersResult {
+  totalRows: number
+  imported: number
+  skippedDuplicates: number
+  skippedInvalid: number
+  validationErrors: string[]
+}
+
+export interface ImportUsersResponse {
+  code: string
+  message: string
+  result: ImportUsersResult
+  success: boolean
+}
+
 export interface StoredCredentials {
   username: string
   token: string

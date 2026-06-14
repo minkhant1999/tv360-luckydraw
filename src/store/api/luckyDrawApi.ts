@@ -1,8 +1,10 @@
 import type {
   History,
+  ImportUsersResponse,
   LoginRequest,
   LoginResponse,
   Participant,
+  PrizesResponse,
   Reward,
   Winner,
   WinnerType,
@@ -22,6 +24,10 @@ export const luckyDrawApi = baseApi.injectEndpoints({
       query: () => '/rewards',
       providesTags: ['Reward'],
     }),
+    getPrizes: builder.query<PrizesResponse, { prizeType: WinnerType }>({
+      query: ({ prizeType }) => `/prize?prize-type=${prizeType}`,
+      providesTags: ['Reward'],
+    }),
     getWinners: builder.query<Winner[], void>({
       query: () => '/winners',
       providesTags: ['Winner'],
@@ -34,13 +40,27 @@ export const luckyDrawApi = baseApi.injectEndpoints({
       query: ({ type }) => `/history?type=${type}`,
       providesTags: ['Participant'],
     }),
+    importUsers: builder.mutation<ImportUsersResponse, File>({
+      query: (file) => {
+        const formData = new FormData()
+        formData.append('file', file)
+        return {
+          url: '/uploadfile/import-users',
+          method: 'POST',
+          body: formData,
+        }
+      },
+      invalidatesTags: ['Participant', 'Reward'],
+    }),
   }),
 })
 
 export const {
   useLoginMutation,
   useGetRewardsQuery,
+  useGetPrizesQuery,
   useGetWinnersQuery,
   useGetParticipantsQuery,
   useGetHisotryQuery,
+  useImportUsersMutation,
 } = luckyDrawApi

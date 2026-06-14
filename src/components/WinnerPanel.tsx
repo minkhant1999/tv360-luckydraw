@@ -1,8 +1,9 @@
-import type { ChangeEvent } from 'react'
+import { type ChangeEvent } from 'react'
 import phoneDisplayBox from '../assets/images/phone-display-box.svg'
 import selectWinnerBtn from '../assets/images/select-winner-btn.svg'
 import prizePedestal from '../assets/images/prize-pedestal.webp'
 import uploadIcon from '../assets/images/upload-icon.svg'
+import { useImportUsersMutation } from '../store/api/luckyDrawApi'
 import type { DrawPhase, Reward } from '../types'
 
 const PHONE_MASK = '09xxxxxxxxx'
@@ -17,8 +18,9 @@ interface WinnerPanelProps {
   display: string
   phase: DrawPhase
   isDrawing: boolean
+  isRewardsEnabled: boolean
   onSelectWinner: () => void
-  onUploadFile: (event: ChangeEvent<HTMLInputElement>) => void
+  onImportSuccess: () => void
 }
 
 function WinnerPanel({
@@ -26,9 +28,27 @@ function WinnerPanel({
   display,
   phase,
   isDrawing,
+  isRewardsEnabled,
   onSelectWinner,
-  onUploadFile,
+  onImportSuccess,
 }: WinnerPanelProps) {
+  const [importUsers, { isLoading: isUploading }] = useImportUsersMutation()
+
+  const handleUploadFile = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    try {
+      const response = await importUsers(file).unwrap()
+      if (response.success) {
+        onImportSuccess()
+      }
+    } catch (error) {
+      console.error('Failed to import users:', error)
+    } finally {
+      event.target.value = ''
+    }
+  }
   const phoneText = formatPhoneDisplay(display, phase)
 
   return (
@@ -87,7 +107,7 @@ function WinnerPanel({
         type="button"
         className="relative mt-6 w-[286px] h-[65px] border-0 bg-transparent cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
         onClick={onSelectWinner}
-        disabled={isDrawing || !selectedReward}
+        disabled={isDrawing || !selectedReward || !isRewardsEnabled}
         aria-label="Select winner"
       >
         <img
@@ -101,16 +121,23 @@ function WinnerPanel({
         </span>
       </button>
 
-      <label className="mt-4 flex items-center gap-3 bg-[#6e6e6e] px-3 py-2 rounded-[20px] shadow-md cursor-pointer hover:bg-[#5a5a5a] transition-colors">
+      <label
+        className={`mt-4 flex items-center gap-3 bg-[#6e6e6e] px-3 py-2 rounded-[20px] shadow-md transition-colors ${
+          isUploading
+            ? 'cursor-not-allowed opacity-60'
+            : 'cursor-pointer hover:bg-[#5a5a5a]'
+        }`}
+      >
         <img src={uploadIcon} alt="" className="w-5 h-5" aria-hidden="true" />
         <span className="font-supreme-regular text-white text-base underline">
-          Upload File
+          {isUploading ? 'Uploading...' : 'Upload File'}
         </span>
         <input
           type="file"
           accept=".csv,.xlsx,.xls,.txt"
           className="sr-only"
-          onChange={onUploadFile}
+          onChange={handleUploadFile}
+          disabled={isUploading}
           aria-label="Upload participant file"
         />
       </label>
