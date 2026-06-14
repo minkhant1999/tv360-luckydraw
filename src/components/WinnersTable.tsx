@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import exportIcon from '../assets/images/export-icon.svg'
 import winnersTag from '../assets/images/winnerstag.webp'
 import type { Winner, WinnerType } from '../types'
+import { useGetHisotryQuery } from '../store/api/luckyDrawApi'
 
 function maskPhone(phone: string): string {
   const full = phone.startsWith('09') ? phone : `09${phone}`
@@ -16,9 +17,17 @@ interface WinnersTableProps {
 }
 
 function WinnersTable({ winners, onExport, className }: WinnersTableProps) {
-  const [activeTab, setActiveTab] = useState<WinnerType>('weekly')
+  const [activeTab, setActiveTab] = useState<WinnerType>('WEEKLY')
+  const { data: historyData, isLoading: isHistoryLoading, isError: isHistoryError, } = useGetHisotryQuery({ type: activeTab })
+  console.log(historyData, 'this is the history data');
 
   const filteredWinners = winners.filter((w) => w.type === activeTab)
+
+  const handleWeeklyTab = (type: WinnerType) => {
+    setActiveTab(type)
+    console.log(activeTab, 'this is the active tab dynamic');
+  }
+
 
   return (
     <aside className="w-[300px] shrink-0">
@@ -37,9 +46,9 @@ function WinnersTable({ winners, onExport, className }: WinnersTableProps) {
               <button
                 type="button"
                 role="tab"
-                aria-selected={activeTab === 'weekly'}
-                onClick={() => setActiveTab('weekly')}
-                className={`font-supreme-regular text-xs px-3 py-1 rounded-full border-0 cursor-pointer ${activeTab === 'weekly'
+                aria-selected={activeTab === 'WEEKLY'}
+                onClick={() => handleWeeklyTab('WEEKLY')}
+                className={`font-supreme-regular text-xs px-3 py-1 rounded-full border-0 cursor-pointer ${activeTab === 'WEEKLY'
                   ? 'bg-[#ededed] text-[#0d0d0d]'
                   : 'bg-transparent border border-[#acacac] text-white'
                   }`}
@@ -49,9 +58,9 @@ function WinnersTable({ winners, onExport, className }: WinnersTableProps) {
               <button
                 type="button"
                 role="tab"
-                aria-selected={activeTab === 'grand'}
-                onClick={() => setActiveTab('grand')}
-                className={`font-supreme-regular text-xs px-3 py-1 rounded-full cursor-pointer border ${activeTab === 'grand'
+                aria-selected={activeTab === 'GRAND'}
+                onClick={() => handleWeeklyTab('GRAND')}
+                className={`font-supreme-regular text-xs px-3 py-1 rounded-full cursor-pointer border ${activeTab === 'GRAND'
                   ? 'bg-[#ededed] text-[#0d0d0d] border-[#ededed]'
                   : 'bg-transparent border-[#acacac] text-white'
                   }`}

@@ -18,7 +18,7 @@ export interface Participant {
   rewardId: RewardId | string | null
 }
 
-export type WinnerType = 'weekly' | 'grand'
+export type WinnerType = 'WEEKLY' | 'GRAND'
 
 export interface Winner {
   id: number
@@ -28,4 +28,25 @@ export interface Winner {
   phone: string
 }
 
+export interface History {
+  id: number
+  type: WinnerType
+  prizeName: string
+  prizeCode: string
+  phoneNumber: number
+}
+
+export interface LoginResponse {
+  token: string
+}
+
+export interface StoredCredentials {
+  username: string
+  password: string
+}
+
+export interface AuthState {
+  username: string | null
+  password: string | null
+}
 export type DrawPhase = 'idle' | 'spinning' | 'revealing' | 'complete'
