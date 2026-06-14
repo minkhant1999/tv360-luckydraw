@@ -153,20 +153,6 @@ export function useLuckyDraw(selectedReward: Reward) {
     event.target.value = ''
   }, [])
 
-  const exportWinners = useCallback(() => {
-    const header = 'NO,PRIZE,PHONE NUMBER\n'
-    const rows = winners
-      .map((w, i) => `${i + 1},"${w.prizeName}",09${w.phone}`)
-      .join('\n')
-    const blob = new Blob([header + rows], { type: 'text/csv' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'winners.csv'
-    link.click()
-    URL.revokeObjectURL(url)
-  }, [winners])
-
   const getDrawnCount = useCallback(
     (rewardId: RewardId, defaultDrawn: number) => rewardsState?.[rewardId] ?? defaultDrawn,
     [rewardsState],
@@ -182,7 +168,6 @@ export function useLuckyDraw(selectedReward: Reward) {
     startDraw,
     resetDraw,
     handleFileUpload,
-    exportWinners,
     getDrawnCount,
     isDrawing: phase === 'spinning' || phase === 'revealing',
   }

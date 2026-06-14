@@ -38,6 +38,13 @@ export interface History {
   phoneNumber: number
 }
 
+export interface HistoryResponse {
+  code: string
+  message: string
+  result: History[]
+  success: boolean
+}
+
 export interface LoginRequest {
   username: string
   password: string

@@ -1,26 +1,18 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { AuthState, StoredCredentials } from '../types'
-
-const AUTH_STORAGE_KEY = 'lucky-cup-auth'
+import { clearAuthFromSession, loadAuthFromSession, saveAuthToSession } from '../lib/authStorage'
+import type { AuthState } from '../types'
 
 function loadStoredAuth(): AuthState {
-  try {
-    const raw = localStorage.getItem(AUTH_STORAGE_KEY)
-    if (!raw) return { username: null, token: null, authenticated: false }
-
-    const parsed = JSON.parse(raw) as StoredCredentials
-    if (parsed.authenticated && parsed.token) {
-      return {
-        username: parsed.username,
-        token: parsed.token,
-        authenticated: true,
-      }
-    }
-  } catch {
-    // ignore invalid storage
+  const stored = loadAuthFromSession()
+  if (!stored) {
+    return { username: null, token: null, authenticated: false }
   }
 
-  return { username: null, token: null, authenticated: false }
+  return {
+    username: stored.username,
+    token: stored.token,
+    authenticated: true,
+  }
 }
 
 const authSlice = createSlice({
@@ -34,13 +26,13 @@ const authSlice = createSlice({
       state.username = action.payload.username
       state.token = action.payload.token
       state.authenticated = action.payload.authenticated
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(action.payload))
+      saveAuthToSession(action.payload)
     },
     clearCredentials: (state) => {
       state.username = null
       state.token = null
       state.authenticated = false
-      localStorage.removeItem(AUTH_STORAGE_KEY)
+      clearAuthFromSession()
     },
   },
 })

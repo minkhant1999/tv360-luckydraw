@@ -1,5 +1,6 @@
 import type {
   History,
+  HistoryResponse,
   ImportUsersResponse,
   LoginRequest,
   LoginResponse,
@@ -39,7 +40,14 @@ export const luckyDrawApi = baseApi.injectEndpoints({
     }),
     getHisotry: builder.query<History[], { type: WinnerType }>({
       query: ({ type }) => `/history?type=${type}`,
+      transformResponse: (response: HistoryResponse) => response.result ?? [],
       providesTags: ['Participant'],
+    }),
+    exportWinners: builder.query<Blob, { type: WinnerType }>({
+      query: ({ type }) => ({
+        url: `/history/export?type=${type}`,
+        responseHandler: (response) => response.blob(),
+      }),
     }),
     importUsers: builder.mutation<ImportUsersResponse, File>({
       query: (file) => {
@@ -73,6 +81,8 @@ export const {
   useGetWinnersQuery,
   useGetParticipantsQuery,
   useGetHisotryQuery,
+  useLazyGetHisotryQuery,
+  useLazyExportWinnersQuery,
   useImportUsersMutation,
   useSelectWinnerMutation,
 } = luckyDrawApi
