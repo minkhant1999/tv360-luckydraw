@@ -1,5 +1,5 @@
-import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react'
-import { useLazyGetLoginQuery } from '../store/api/luckyDrawApi'
+import { type FormEvent, useCallback, useState } from 'react'
+import { useLoginMutation } from '../store/api/luckyDrawApi'
 import { clearCredentials, selectIsAuthenticated, setCredentials } from '../store/authSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import LoginPage from './LoginPage'
@@ -14,66 +14,45 @@ function AuthGate({ children }: AuthGateProps) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [isVerifying, setIsVerifying] = useState(isAuthenticated)
-  const [triggerLogin] = useLazyGetLoginQuery()
-  const hasVerifiedStoredCredentials = useRef(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [login] = useLoginMutation()
 
-  const verifyLogin = useCallback(async () => {
-    await triggerLogin().unwrap()
-  }, [triggerLogin])
+  const handleLogin = useCallback(
+    async (credentials: { username: string; password: string }) => {
+      const response = await login(credentials).unwrap()
+      const { result } = response
 
-  useEffect(() => {
-    if (!isAuthenticated || hasVerifiedStoredCredentials.current) {
-      return
-    }
-
-    hasVerifiedStoredCredentials.current = true
-    let cancelled = false
-
-    const verifyStoredCredentials = async () => {
-      setIsVerifying(true)
-      setError(null)
-
-      try {
-        await verifyLogin()
-      } catch {
-        if (!cancelled) {
-          dispatch(clearCredentials())
-          hasVerifiedStoredCredentials.current = false
-          setError('Session expired. Please sign in again.')
-        }
-      } finally {
-        if (!cancelled) {
-          setIsVerifying(false)
-        }
+      if (!result.authenticated || !result.token) {
+        throw new Error(result.message || 'Login failed')
       }
-    }
 
-    void verifyStoredCredentials()
-
-    return () => {
-      cancelled = true
-    }
-  }, [dispatch, isAuthenticated, verifyLogin])
+      dispatch(
+        setCredentials({
+          username: result.username || credentials.username,
+          token: result.token,
+          authenticated: true,
+        }),
+      )
+    },
+    [dispatch, login],
+  )
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError(null)
-    setIsVerifying(true)
-
-    dispatch(setCredentials({ username, password }))
+    setIsSubmitting(true)
 
     try {
-      await verifyLogin()
+      await handleLogin({ username, password })
     } catch {
       dispatch(clearCredentials())
       setError('Invalid username or password.')
     } finally {
-      setIsVerifying(false)
+      setIsSubmitting(false)
     }
   }
 
-  if (isAuthenticated && !isVerifying) {
+  if (isAuthenticated) {
     return children
   }
 
@@ -82,7 +61,7 @@ function AuthGate({ children }: AuthGateProps) {
       username={username}
       password={password}
       error={error}
-      isSubmitting={isVerifying}
+      isSubmitting={isSubmitting}
       onUsernameChange={setUsername}
       onPasswordChange={setPassword}
       onSubmit={handleSubmit}

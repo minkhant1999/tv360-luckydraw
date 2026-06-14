@@ -9,17 +9,16 @@ import { clearCredentials } from '../authSlice'
 
 type AuthSliceState = {
   auth: {
-    username: string | null
-    password: string | null
+    token: string | null
   }
 }
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_BASE_URL ?? 'http://10.201.234.135:8889/lucky-cup/api/v1',
   prepareHeaders: (headers, { getState }) => {
-    const { username, password } = (getState() as AuthSliceState).auth
-    if (username && password) {
-      headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`)
+    const { token } = (getState() as AuthSliceState).auth
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`)
     }
     return headers
   },

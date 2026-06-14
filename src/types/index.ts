@@ -36,17 +36,31 @@ export interface History {
   phoneNumber: number
 }
 
-export interface LoginResponse {
-  token: string
-}
-
-export interface StoredCredentials {
+export interface LoginRequest {
   username: string
   password: string
 }
 
+export interface LoginResult {
+  username: string
+  message: string
+  authenticated: boolean
+  token: string
+}
+
+export interface LoginResponse {
+  result: LoginResult
+}
+
+export interface StoredCredentials {
+  username: string
+  token: string
+  authenticated: boolean
+}
+
 export interface AuthState {
   username: string | null
-  password: string | null
+  token: string | null
+  authenticated: boolean
 }
 export type DrawPhase = 'idle' | 'spinning' | 'revealing' | 'complete'

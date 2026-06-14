@@ -1,35 +1,45 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { AuthState, StoredCredentials } from '../types'
 
-const AUTH_STORAGE_KEY = 'lucky-cup-basic-auth'
+const AUTH_STORAGE_KEY = 'lucky-cup-auth'
 
-
-function loadStoredCredentials(): Pick<AuthState, 'username' | 'password'> {
+function loadStoredAuth(): AuthState {
   try {
     const raw = localStorage.getItem(AUTH_STORAGE_KEY)
-    if (!raw) return { username: null, password: null }
+    if (!raw) return { username: null, token: null, authenticated: false }
+
     const parsed = JSON.parse(raw) as StoredCredentials
-    if (parsed.username && parsed.password) {
-      return { username: parsed.username, password: parsed.password }
+    if (parsed.authenticated && parsed.token) {
+      return {
+        username: parsed.username,
+        token: parsed.token,
+        authenticated: true,
+      }
     }
   } catch {
     // ignore invalid storage
   }
-  return { username: null, password: null }
+
+  return { username: null, token: null, authenticated: false }
 }
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: loadStoredCredentials(),
+  initialState: loadStoredAuth(),
   reducers: {
-    setCredentials: (state, action: PayloadAction<{ username: string; password: string }>) => {
+    setCredentials: (
+      state,
+      action: PayloadAction<{ username: string; token: string; authenticated: boolean }>,
+    ) => {
       state.username = action.payload.username
-      state.password = action.payload.password
+      state.token = action.payload.token
+      state.authenticated = action.payload.authenticated
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(action.payload))
     },
     clearCredentials: (state) => {
       state.username = null
-      state.password = null
+      state.token = null
+      state.authenticated = false
       localStorage.removeItem(AUTH_STORAGE_KEY)
     },
   },
@@ -38,6 +48,6 @@ const authSlice = createSlice({
 export const { setCredentials, clearCredentials } = authSlice.actions
 
 export const selectIsAuthenticated = (state: { auth: AuthState }) =>
-  Boolean(state.auth.username && state.auth.password)
+  state.auth.authenticated && Boolean(state.auth.token)
 
 export default authSlice.reducer
