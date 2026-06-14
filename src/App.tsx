@@ -20,6 +20,7 @@ function App() {
   const [session, setSession] = useState(loadAppSession)
   const [drawResult, setDrawResult] = useState<SelectWinnerResult | null>(null)
   const [isCongratsOpen, setIsCongratsOpen] = useState(false)
+  const [isSelectingWinner, setIsSelectingWinner] = useState(false)
 
   const isRewardsEnabled =
     session.prizeType === 'WEEKLY' ? session.weeklyUploaded : session.grandUploaded
@@ -180,7 +181,7 @@ function App() {
           rewards={rewardsWithCounts}
           selectedRewardId={session.selectedRewardId}
           onSelectReward={handleSelectReward}
-          disableSelect={!isRewardsEnabled || isPrizesLoading}
+          disableSelect={!isRewardsEnabled || isPrizesLoading || isDrawing || isSelectingWinner}
           isLoading={isPrizesLoading}
         />
         <WinnerPanel
@@ -192,6 +193,7 @@ function App() {
           isRewardsEnabled={isRewardsEnabled && !isPrizesLoading}
           onSelectWinner={handleSelectWinner}
           onImportSuccess={handleImportSuccess}
+          onSelectingWinnerChange={setIsSelectingWinner}
         />
         <WinnersTable
           className="h-[400px]"

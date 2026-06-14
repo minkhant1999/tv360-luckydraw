@@ -1,4 +1,4 @@
-import { type ChangeEvent } from 'react'
+import { type ChangeEvent, useEffect } from 'react'
 import phoneDisplayBox from '../assets/images/phone-display-box.svg'
 import selectWinnerBtn from '../assets/images/select-winner-btn.svg'
 import prizePedestal from '../assets/images/prize-pedestal.webp'
@@ -24,6 +24,7 @@ interface WinnerPanelProps {
   isRewardsEnabled: boolean
   onSelectWinner: (result: SelectWinnerResult) => void
   onImportSuccess: () => void
+  onSelectingWinnerChange: (isSelecting: boolean) => void
 }
 
 function WinnerPanel({
@@ -35,9 +36,14 @@ function WinnerPanel({
   isRewardsEnabled,
   onSelectWinner,
   onImportSuccess,
+  onSelectingWinnerChange,
 }: WinnerPanelProps) {
   const [importUsers, { isLoading: isUploading }] = useImportUsersMutation()
   const [selectWinner, { isLoading: isSelectingWinner }] = useSelectWinnerMutation()
+
+  useEffect(() => {
+    onSelectingWinnerChange(isSelectingWinner)
+  }, [isSelectingWinner, onSelectingWinnerChange])
 
   const handleUploadFile = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
