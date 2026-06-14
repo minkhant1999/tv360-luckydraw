@@ -10,6 +10,8 @@ export interface Reward {
   quantity: number
   drawn: number
   image: string
+  prizeCode?: string
+  prizeType?: WinnerType
 }
 
 export interface Participant {
@@ -64,6 +66,22 @@ export interface PrizesResponse {
   code: string
   message: string
   result: Prize[]
+  success: boolean
+}
+
+export interface SelectWinnerResult {
+  prizeName: string
+  prizeCode: string
+  prizeType: WinnerType
+  isdn: string
+  winnerName: string
+  remainingQuantity: number
+}
+
+export interface SelectWinnerResponse {
+  code: string
+  message: string
+  result: SelectWinnerResult
   success: boolean
 }
 

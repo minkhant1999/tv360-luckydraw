@@ -6,6 +6,7 @@ import type {
   Participant,
   PrizesResponse,
   Reward,
+  SelectWinnerResponse,
   Winner,
   WinnerType,
 } from '../../types'
@@ -52,6 +53,16 @@ export const luckyDrawApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ['Participant', 'Reward'],
     }),
+    selectWinner: builder.mutation<
+      SelectWinnerResponse,
+      { prize: string; prizeType: WinnerType }
+    >({
+      query: ({ prize, prizeType }) => ({
+        url: `/select-winner?prize=${prize}&prize-type=${prizeType}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Winner', 'Reward'],
+    }),
   }),
 })
 
@@ -63,4 +74,5 @@ export const {
   useGetParticipantsQuery,
   useGetHisotryQuery,
   useImportUsersMutation,
+  useSelectWinnerMutation,
 } = luckyDrawApi

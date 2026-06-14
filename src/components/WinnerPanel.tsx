@@ -3,13 +3,15 @@ import phoneDisplayBox from '../assets/images/phone-display-box.svg'
 import selectWinnerBtn from '../assets/images/select-winner-btn.svg'
 import prizePedestal from '../assets/images/prize-pedestal.webp'
 import uploadIcon from '../assets/images/upload-icon.svg'
-import { useImportUsersMutation } from '../store/api/luckyDrawApi'
+import { useImportUsersMutation, useSelectWinnerMutation } from '../store/api/luckyDrawApi'
 import type { DrawPhase, Reward } from '../types'
+import { formatIsdnForDisplay } from '../utils/normalizePhoneDigits'
 
 const PHONE_MASK = '09xxxxxxxxx'
 
-function formatPhoneDisplay(digits: string, phase: DrawPhase): string {
+function formatPhoneDisplay(digits: string, phase: DrawPhase, isdn?: string): string {
   if (phase === 'idle') return PHONE_MASK
+  if (phase === 'complete' && isdn) return formatIsdnForDisplay(isdn)
   return `09${digits}`
 }
 
@@ -17,9 +19,10 @@ interface WinnerPanelProps {
   selectedReward: Reward
   display: string
   phase: DrawPhase
+  winnerIsdn: string | null
   isDrawing: boolean
   isRewardsEnabled: boolean
-  onSelectWinner: () => void
+  onSelectWinner: (winnerIsdn: string) => void
   onImportSuccess: () => void
 }
 
@@ -27,12 +30,14 @@ function WinnerPanel({
   selectedReward,
   display,
   phase,
+  winnerIsdn,
   isDrawing,
   isRewardsEnabled,
   onSelectWinner,
   onImportSuccess,
 }: WinnerPanelProps) {
   const [importUsers, { isLoading: isUploading }] = useImportUsersMutation()
+  const [selectWinner, { isLoading: isSelectingWinner }] = useSelectWinnerMutation()
 
   const handleUploadFile = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -49,7 +54,27 @@ function WinnerPanel({
       event.target.value = ''
     }
   }
-  const phoneText = formatPhoneDisplay(display, phase)
+
+  const handleSelectWinner = async () => {
+    if (!selectedReward?.prizeCode || !selectedReward?.prizeType) return
+
+    try {
+      const response = await selectWinner({
+        prize: selectedReward.prizeCode,
+        prizeType: selectedReward.prizeType,
+      }).unwrap()
+
+      if (response.success) {
+        onSelectWinner(response.result.isdn)
+      }
+    } catch (error) {
+      console.error('Failed to select winner:', error)
+    }
+  }
+
+  const phoneText = formatPhoneDisplay(display, phase, winnerIsdn ?? undefined)
+  const isDrawDisabled =
+    isDrawing || !selectedReward || !isRewardsEnabled || isSelectingWinner
 
   return (
     <section className="winner-panel flex min-w-0 flex-1 flex-col items-center">
@@ -106,8 +131,8 @@ function WinnerPanel({
       <button
         type="button"
         className="relative mt-6 w-[286px] h-[65px] border-0 bg-transparent cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
-        onClick={onSelectWinner}
-        disabled={isDrawing || !selectedReward || !isRewardsEnabled}
+        onClick={handleSelectWinner}
+        disabled={isDrawDisabled}
         aria-label="Select winner"
       >
         <img
@@ -117,7 +142,7 @@ function WinnerPanel({
           aria-hidden="true"
         />
         <span className="relative z-10 italic font-povlar text-xl bg-gradient-to-b from-white to-[#d4d3d3] bg-clip-text text-transparent drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] pt-1">
-          {isDrawing ? 'DRAWING...' : 'SELECT WINNER'}
+          {isDrawing || isSelectingWinner ? 'DRAWING...' : 'SELECT WINNER'}
         </span>
       </button>
 

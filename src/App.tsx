@@ -40,6 +40,7 @@ function App() {
   const {
     phase,
     display,
+    winnerIsdn,
     winners,
     startDraw,
     exportWinners,
@@ -80,6 +81,7 @@ function App() {
           selectedReward={selectedReward}
           display={display}
           phase={phase}
+          winnerIsdn={winnerIsdn}
           isDrawing={isDrawing}
           isRewardsEnabled={isRewardsEnabled && !isPrizesLoading}
           onSelectWinner={startDraw}

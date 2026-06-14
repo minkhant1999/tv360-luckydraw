@@ -4,7 +4,6 @@ import { initialWinners } from '../data/winners'
 import {
   participants as defaultParticipants,
   parseParticipantsFromText,
-  pickRandomWinner,
 } from '../data/participants'
 import type {
   DrawPhase,
@@ -12,7 +11,9 @@ import type {
   Reward,
   RewardId,
   Winner,
+  WinnerType,
 } from '../types'
+import { normalizePhoneDigits } from '../utils/normalizePhoneDigits'
 
 const DIGIT_COUNT = 9
 const MASK = 'x'.repeat(DIGIT_COUNT)
@@ -35,6 +36,7 @@ function randomSpinDuration(): number {
 export function useLuckyDraw(selectedReward: Reward) {
   const [phase, setPhase] = useState<DrawPhase>('idle')
   const [display, setDisplay] = useState(MASK)
+  const [winnerIsdn, setWinnerIsdn] = useState<string | null>(null)
   const [winner, setWinner] = useState<Participant | null>(null)
   const [revealedCount, setRevealedCount] = useState(0)
   const [participantPool, setParticipantPool] = useState<Participant[]>(defaultParticipants)
@@ -62,16 +64,16 @@ export function useLuckyDraw(selectedReward: Reward) {
 
   useEffect(() => clearTimers, [clearTimers])
 
-  const startDraw = useCallback(() => {
+  const startDraw = useCallback((isdn: string) => {
     if (!selectedReward || phase === 'spinning' || phase === 'revealing') return
+
+    const phone = normalizePhoneDigits(isdn)
+    if (phone.length !== DIGIT_COUNT) return
 
     clearTimers()
     setRevealedCount(0)
-
-    const selected = pickRandomWinner(participantPool, selectedReward.id)
-    if (!selected) return
-
-    setWinner(selected)
+    setWinnerIsdn(isdn)
+    setWinner({ id: Date.now(), phone, rewardId: selectedReward.id })
     setPhase('spinning')
     setDisplay(randomSpinDisplay())
 
@@ -89,15 +91,13 @@ export function useLuckyDraw(selectedReward: Reward) {
       setDisplay(MASK)
       setRevealedCount(0)
 
-      const phone = selected.phone // this one need to bind api winner phone number
-      // const phone = '781211763'
       let revealed = 0
 
       revealIntervalRef.current = setInterval(() => {
         revealed += 1
         const maskLength = DIGIT_COUNT - revealed
         const revealedPart = phone.slice(-revealed)
-        const maskedPart = 'x'.repeat(maskLength) 
+        const maskedPart = 'x'.repeat(maskLength)
         setDisplay(maskedPart + revealedPart)
         setRevealedCount(revealed)
 
@@ -110,10 +110,10 @@ export function useLuckyDraw(selectedReward: Reward) {
 
           const newWinner: Winner = {
             id: Date.now(),
-            type: 'weekly',
+            type: (selectedReward.prizeType ?? 'WEEKLY') as WinnerType,
             prizeName: selectedReward.name,
             prizeImage: selectedReward.image,
-            phone: selected.phone,
+            phone,
           }
           setWinners((prev) => [newWinner, ...prev])
 
@@ -125,12 +125,13 @@ export function useLuckyDraw(selectedReward: Reward) {
         }
       }, REVEAL_INTERVAL_MS)
     }, randomSpinDuration())
-  }, [phase, clearTimers, selectedReward, participantPool])
+  }, [phase, clearTimers, selectedReward])
 
   const resetDraw = useCallback(() => {
     clearTimers()
     setPhase('idle')
     setDisplay(MASK)
+    setWinnerIsdn(null)
     setWinner(null)
     setRevealedCount(0)
   }, [clearTimers])
@@ -174,6 +175,7 @@ export function useLuckyDraw(selectedReward: Reward) {
   return {
     phase,
     display,
+    winnerIsdn,
     winner,
     revealedCount,
     winners,
