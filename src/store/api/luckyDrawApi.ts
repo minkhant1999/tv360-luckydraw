@@ -69,7 +69,7 @@ export const luckyDrawApi = baseApi.injectEndpoints({
         url: `/select-winner?prize=${prize}&prize-type=${prizeType}`,
         method: 'POST',
       }),
-      invalidatesTags: ['Winner', 'Reward'],
+      invalidatesTags: ['Winner', 'Reward', 'Participant'],
     }),
   }),
 })

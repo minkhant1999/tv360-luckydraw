@@ -30,3 +30,7 @@ export function mapPrizesToRewards(prizes: Prize[]): Reward[] {
     .map((prize) => mapPrizeToReward(prize))
     .filter((reward): reward is Reward => reward !== null)
 }
+
+export function getPrizeImageByCode(prizeCode: string): string {
+  return PRIZE_CONFIG[prizeCode]?.image ?? prizeKyats
+}

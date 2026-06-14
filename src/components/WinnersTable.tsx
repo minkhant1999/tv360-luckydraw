@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import exportIcon from '../assets/images/export-icon.svg'
 import winnersTag from '../assets/images/winnerstag.webp'
-import { useLazyExportWinnersQuery, useLazyGetHisotryQuery } from '../store/api/luckyDrawApi'
+import { useGetHisotryQuery, useLazyExportWinnersQuery } from '../store/api/luckyDrawApi'
 import type { WinnerType } from '../types'
 import { downloadBlob } from '../utils/downloadBlob'
 
@@ -13,29 +13,21 @@ function maskPhone(phone: string | number): string {
 }
 
 interface WinnersTableProps {
+  prizeType: WinnerType
+  onPrizeTypeChange: (type: WinnerType) => void
   className?: string
 }
 
-function WinnersTable({ className }: WinnersTableProps) {
-  const [activeTab, setActiveTab] = useState<WinnerType>('WEEKLY')
+function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableProps) {
   const [isExporting, setIsExporting] = useState(false)
-  const [fetchHistory, { data: historyData = [], isFetching, isError }] = useLazyGetHisotryQuery()
+  const { data: historyData = [], isFetching, isError } = useGetHisotryQuery({ type: prizeType })
   const [exportWinners] = useLazyExportWinnersQuery()
-
-  useEffect(() => {
-    void fetchHistory({ type: 'WEEKLY' })
-  }, [fetchHistory])
-
-  const handleHistory = (type: WinnerType) => {
-    setActiveTab(type)
-    void fetchHistory({ type })
-  }
 
   const handleExport = async () => {
     setIsExporting(true)
     try {
-      const blob = await exportWinners({ type: activeTab }).unwrap()
-      downloadBlob(blob, `winners-${activeTab.toLowerCase()}.xlsx`)
+      const blob = await exportWinners({ type: prizeType }).unwrap()
+      downloadBlob(blob, `winners-${prizeType.toLowerCase()}.xlsx`)
     } catch {
       return
     } finally {
@@ -60,9 +52,9 @@ function WinnersTable({ className }: WinnersTableProps) {
               <button
                 type="button"
                 role="tab"
-                aria-selected={activeTab === 'WEEKLY'}
-                onClick={() => handleHistory('WEEKLY')}
-                className={`font-supreme-regular text-xs px-3 py-1 rounded-full border-0 cursor-pointer ${activeTab === 'WEEKLY'
+                aria-selected={prizeType === 'WEEKLY'}
+                onClick={() => onPrizeTypeChange('WEEKLY')}
+                className={`font-supreme-regular text-xs px-3 py-1 rounded-full border-0 cursor-pointer ${prizeType === 'WEEKLY'
                   ? 'bg-[#ededed] text-[#0d0d0d]'
                   : 'bg-transparent border border-[#acacac] text-white'
                   }`}
@@ -72,9 +64,9 @@ function WinnersTable({ className }: WinnersTableProps) {
               <button
                 type="button"
                 role="tab"
-                aria-selected={activeTab === 'GRAND'}
-                onClick={() => handleHistory('GRAND')}
-                className={`font-supreme-regular text-xs px-3 py-1 rounded-full cursor-pointer border ${activeTab === 'GRAND'
+                aria-selected={prizeType === 'GRAND'}
+                onClick={() => onPrizeTypeChange('GRAND')}
+                className={`font-supreme-regular text-xs px-3 py-1 rounded-full cursor-pointer border ${prizeType === 'GRAND'
                   ? 'bg-[#ededed] text-[#0d0d0d] border-[#ededed]'
                   : 'bg-transparent border-[#acacac] text-white'
                   }`}

@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import backgroundImage from './assets/images/background.webp'
+import CongratulationsModal from './components/CongratulationsModal'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import RewardsList from './components/RewardsList'
@@ -8,16 +9,23 @@ import WinnerPanel from './components/WinnerPanel'
 import WinnersTable from './components/WinnersTable'
 import { rewards as fallbackRewards } from './data/rewards'
 import { useLuckyDraw } from './hooks/useLuckyDraw'
-import { useGetPrizesQuery } from './store/api/luckyDrawApi'
-import type { RewardId } from './types'
+import { loadAppSession, getDrawnCountsForPrizeType, getDrawnCountsKey, saveAppSession } from './lib/appSessionStorage'
+import { luckyDrawApi, useGetPrizesQuery } from './store/api/luckyDrawApi'
+import { useAppDispatch } from './store/hooks'
+import type { RewardId, SelectWinnerResult, WinnerType } from './types'
 import { mapPrizesToRewards } from './utils/mapPrizesToRewards'
 
 function App() {
-  const [selectedRewardId, setSelectedRewardId] = useState<RewardId>(fallbackRewards[0].id)
-  const [isRewardsEnabled, setIsRewardsEnabled] = useState(false)
+  const dispatch = useAppDispatch()
+  const [session, setSession] = useState(loadAppSession)
+  const [drawResult, setDrawResult] = useState<SelectWinnerResult | null>(null)
+  const [isCongratsOpen, setIsCongratsOpen] = useState(false)
+
+  const isRewardsEnabled =
+    session.prizeType === 'WEEKLY' ? session.weeklyUploaded : session.grandUploaded
 
   const { data: prizesResponse, isLoading: isPrizesLoading } = useGetPrizesQuery(
-    { prizeType: 'WEEKLY' },
+    { prizeType: session.prizeType },
     { skip: !isRewardsEnabled },
   )
 
@@ -32,14 +40,56 @@ function App() {
   )
 
   useEffect(() => {
-    if (rewards[0]) {
-      setSelectedRewardId(rewards[0].id)
-    }
+    setSession((current) => {
+      if (rewards.some((reward) => reward.id === current.selectedRewardId)) {
+        return current
+      }
+
+      const next = {
+        ...current,
+        selectedRewardId: rewards[0]?.id ?? current.selectedRewardId,
+      }
+      saveAppSession(next)
+      return next
+    })
   }, [rewards])
 
   const selectedReward = useMemo(
-    () => rewards.find((r) => r.id === selectedRewardId) ?? rewards[0],
-    [rewards, selectedRewardId],
+    () => rewards.find((r) => r.id === session.selectedRewardId) ?? rewards[0],
+    [rewards, session.selectedRewardId],
+  )
+
+  const drawnCounts = useMemo(
+    () => getDrawnCountsForPrizeType(session),
+    [session],
+  )
+
+  const getDrawnCount = useCallback(
+    (rewardId: RewardId, defaultDrawn: number) => drawnCounts[rewardId] ?? defaultDrawn,
+    [drawnCounts],
+  )
+
+  const handleDrawComplete = useCallback(
+    (rewardId: RewardId) => {
+      setSession((current) => {
+        const countsKey = getDrawnCountsKey(current.prizeType)
+        const currentCounts = current[countsKey]
+        const base =
+          currentCounts[rewardId] ??
+          rewards.find((reward) => reward.id === rewardId)?.drawn ??
+          0
+        const next = {
+          ...current,
+          [countsKey]: {
+            ...currentCounts,
+            [rewardId]: base + 1,
+          },
+        }
+        saveAppSession(next)
+        return next
+      })
+    },
+    [rewards],
   )
 
   const {
@@ -47,9 +97,30 @@ function App() {
     display,
     winnerIsdn,
     startDraw,
-    getDrawnCount,
+    resetDraw,
     isDrawing,
-  } = useLuckyDraw(selectedReward)
+  } = useLuckyDraw(selectedReward, handleDrawComplete)
+
+  const handleSelectWinner = useCallback(
+    (result: SelectWinnerResult) => {
+      setDrawResult(result)
+      startDraw(result.isdn)
+    },
+    [startDraw],
+  )
+
+  useEffect(() => {
+    if (phase === 'complete' && drawResult) {
+      setIsCongratsOpen(true)
+    }
+  }, [phase, drawResult])
+
+  const handleCloseCongrats = useCallback(() => {
+    setIsCongratsOpen(false)
+    setDrawResult(null)
+    resetDraw()
+    dispatch(luckyDrawApi.util.invalidateTags(['Participant']))
+  }, [resetDraw, dispatch])
 
   const rewardsWithCounts = useMemo(
     () =>
@@ -59,6 +130,37 @@ function App() {
       })),
     [rewards, getDrawnCount],
   )
+
+  const handleSelectReward = useCallback((rewardId: RewardId) => {
+    setSession((current) => {
+      const next = { ...current, selectedRewardId: rewardId }
+      saveAppSession(next)
+      return next
+    })
+  }, [])
+
+  const handleImportSuccess = useCallback(() => {
+    setSession((current) => {
+      const next =
+        current.prizeType === 'WEEKLY'
+          ? { ...current, weeklyUploaded: true }
+          : { ...current, grandUploaded: true }
+      saveAppSession(next)
+      return next
+    })
+  }, [])
+
+  const handlePrizeTypeChange = useCallback((prizeType: WinnerType) => {
+    setSession((current) => {
+      const next = {
+        ...current,
+        prizeType,
+        grandUploaded: prizeType === 'GRAND' ? false : current.grandUploaded,
+      }
+      saveAppSession(next)
+      return next
+    })
+  }, [])
 
   return (
     <div className="flex h-full min-h-0 flex-col relative overflow-hidden">
@@ -76,8 +178,8 @@ function App() {
         <RewardsList
           className="h-[430px]"
           rewards={rewardsWithCounts}
-          selectedRewardId={selectedRewardId}
-          onSelectReward={setSelectedRewardId}
+          selectedRewardId={session.selectedRewardId}
+          onSelectReward={handleSelectReward}
           disableSelect={!isRewardsEnabled || isPrizesLoading}
           isLoading={isPrizesLoading}
         />
@@ -88,13 +190,23 @@ function App() {
           winnerIsdn={winnerIsdn}
           isDrawing={isDrawing}
           isRewardsEnabled={isRewardsEnabled && !isPrizesLoading}
-          onSelectWinner={startDraw}
-          onImportSuccess={() => setIsRewardsEnabled(true)}
+          onSelectWinner={handleSelectWinner}
+          onImportSuccess={handleImportSuccess}
         />
-        <WinnersTable className="h-[400px]" />
+        <WinnersTable
+          className="h-[400px]"
+          prizeType={session.prizeType}
+          onPrizeTypeChange={handlePrizeTypeChange}
+        />
       </main>
 
       <Footer />
+
+      <CongratulationsModal
+        open={isCongratsOpen}
+        onClose={handleCloseCongrats}
+        result={drawResult}
+      />
     </div>
   )
 }

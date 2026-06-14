@@ -33,15 +33,17 @@ function randomSpinDuration(): number {
   return SPIN_MIN_MS + Math.floor(Math.random() * (SPIN_MAX_MS - SPIN_MIN_MS + 1))
 }
 
-export function useLuckyDraw(selectedReward: Reward) {
+export function useLuckyDraw(
+  selectedReward: Reward,
+  onDrawComplete?: (rewardId: RewardId) => void,
+) {
   const [phase, setPhase] = useState<DrawPhase>('idle')
   const [display, setDisplay] = useState(MASK)
   const [winnerIsdn, setWinnerIsdn] = useState<string | null>(null)
   const [winner, setWinner] = useState<Participant | null>(null)
   const [revealedCount, setRevealedCount] = useState(0)
-  const [participantPool, setParticipantPool] = useState<Participant[]>(defaultParticipants)
+  const [, setParticipantPool] = useState<Participant[]>(defaultParticipants)
   const [winners, setWinners] = useState<Winner[]>(initialWinners)
-  const [rewardsState, setRewardsState] = useState<Partial<Record<RewardId, number>> | null>(null)
 
   const spinTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const spinIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -116,16 +118,11 @@ export function useLuckyDraw(selectedReward: Reward) {
             phone,
           }
           setWinners((prev) => [newWinner, ...prev])
-
-          setRewardsState((prev) => {
-            const base = prev ?? {}
-            const current = base[selectedReward.id] ?? selectedReward.drawn
-            return { ...base, [selectedReward.id]: current + 1 }
-          })
+          onDrawComplete?.(selectedReward.id)
         }
       }, REVEAL_INTERVAL_MS)
     }, randomSpinDuration())
-  }, [phase, clearTimers, selectedReward])
+  }, [phase, clearTimers, selectedReward, onDrawComplete])
 
   const resetDraw = useCallback(() => {
     clearTimers()
@@ -153,11 +150,6 @@ export function useLuckyDraw(selectedReward: Reward) {
     event.target.value = ''
   }, [])
 
-  const getDrawnCount = useCallback(
-    (rewardId: RewardId, defaultDrawn: number) => rewardsState?.[rewardId] ?? defaultDrawn,
-    [rewardsState],
-  )
-
   return {
     phase,
     display,
@@ -168,7 +160,6 @@ export function useLuckyDraw(selectedReward: Reward) {
     startDraw,
     resetDraw,
     handleFileUpload,
-    getDrawnCount,
     isDrawing: phase === 'spinning' || phase === 'revealing',
   }
 }

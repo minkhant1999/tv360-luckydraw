@@ -4,7 +4,7 @@ import selectWinnerBtn from '../assets/images/select-winner-btn.svg'
 import prizePedestal from '../assets/images/prize-pedestal.webp'
 import uploadIcon from '../assets/images/upload-icon.svg'
 import { useImportUsersMutation, useSelectWinnerMutation } from '../store/api/luckyDrawApi'
-import type { DrawPhase, Reward } from '../types'
+import type { DrawPhase, Reward, SelectWinnerResult } from '../types'
 import { formatIsdnForDisplay } from '../utils/normalizePhoneDigits'
 
 const PHONE_MASK = '09xxxxxxxxx'
@@ -22,7 +22,7 @@ interface WinnerPanelProps {
   winnerIsdn: string | null
   isDrawing: boolean
   isRewardsEnabled: boolean
-  onSelectWinner: (winnerIsdn: string) => void
+  onSelectWinner: (result: SelectWinnerResult) => void
   onImportSuccess: () => void
 }
 
@@ -65,7 +65,7 @@ function WinnerPanel({
       }).unwrap()
 
       if (response.success) {
-        onSelectWinner(response.result.isdn)
+        onSelectWinner(response.result)
       }
     } catch (error) {
       console.error('Failed to select winner:', error)
