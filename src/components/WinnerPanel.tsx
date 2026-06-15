@@ -85,106 +85,111 @@ function WinnerPanel({
 
   const phoneText = formatPhoneDisplay(display, phase, winnerIsdn ?? undefined)
   const isDrawDisabled =
-    isDrawing || !selectedReward || !isRewardsEnabled || isSelectingWinner
+    isDrawing || !selectedReward || !isRewardsEnabled || isSelectingWinner 
 
   return (
     <>
-    <section className="winner-panel flex min-w-0 flex-1 flex-col items-center">
-      <div className="w-[340px] bg-[#670105] h-[34px] flex items-center justify-center shrink-0">
-        <p className="font-supreme-bold text-base m-0 bg-gradient-to-b from-[#ff8a04] to-[#fc0] bg-clip-text text-transparent">
-          {selectedReward?.name ?? 'Select a reward'}
-        </p>
-      </div>
-
-      <div className="relative mb-1 mt-2 flex h-[clamp(100px,16vh,180px)] w-full shrink-0 justify-center">
-        <img
-          src={assetPaths.images.prizePedestal}
-          alt=""
-          className="absolute bottom-0 w-[340px] max-w-full h-auto pointer-events-none"
-          aria-hidden="true"
-        />
-        {selectedReward && (
-          <img
-            src={selectedReward.image}
-            alt={selectedReward.name}
-            className="relative z-10 mt-6 h-[clamp(80px,14vh,150px)] w-auto object-contain drop-shadow-lg"
-          />
-        )}
-      </div>
-
-      <div className="flex flex-col items-center mt-2 w-full max-w-[550px]">
-        <p className="font-povlar text-sm bg-[linear-gradient(180deg,#FFFFFF_0%,#BDBDBD_100%)] italic bg-clip-text text-transparent tracking-wide pt-4 pb-2 mb-1 ">
-          WINNER&apos;s PHONE NUMBER
-        </p>
-
-        <div className="relative w-full max-w-[550px] h-[53px] flex items-center justify-center">
-          <img
-            src={assetPaths.images.phoneDisplayBox}
-            alt=""
-            className="absolute inset-0 w-full h-full object-fill pointer-events-none"
-            aria-hidden="true"
-          />
-          <p
-            className="relative z-10 font-povlar text-[clamp(1.25rem,2.5vw,1.75rem)] m-0 tracking-wider tabular-nums bg-[linear-gradient(172deg,#000_23%,#5d5d5d_77%)] bg-clip-text text-transparent"
-            aria-live="polite"
-            aria-label={`Phone number: ${phoneText}`}
-          >
-            {phoneText}
+      <section className="winner-panel flex min-w-0 flex-1 flex-col items-center">
+        <div className="w-[340px] bg-[#670105] h-[34px] flex items-center justify-center shrink-0">
+          <p className="font-supreme-bold text-base m-0 bg-gradient-to-b from-[#ff8a04] to-[#fc0] bg-clip-text text-transparent">
+            {selectedReward?.name ?? "Select a reward"}
           </p>
         </div>
 
-        {isDrawing && (
-          <p className="font-ui text-[#c7bebe] text-xs mt-2 m-0">
-            {phase === 'spinning' ? 'Drawing winner...' : 'Revealing number...'}
+        <div className="relative mb-1 mt-2 flex h-[clamp(100px,16vh,180px)] w-full shrink-0 justify-center">
+          <img
+            src={assetPaths.images.prizePedestal}
+            alt=""
+            className="absolute bottom-0 w-[340px] max-w-full h-auto pointer-events-none"
+            aria-hidden="true"
+          />
+          {selectedReward && (
+            <img
+              src={selectedReward.image}
+              alt={selectedReward.name}
+              className="relative z-10 mt-6 h-[clamp(80px,14vh,150px)] w-auto object-contain drop-shadow-lg"
+            />
+          )}
+        </div>
+
+        <div className="flex flex-col items-center mt-2 w-full max-w-[550px]">
+          <p className="font-povlar text-sm bg-[linear-gradient(180deg,#FFFFFF_0%,#BDBDBD_100%)] italic bg-clip-text text-transparent tracking-wide pt-4 pb-2 mb-1 ">
+            WINNER&apos;s PHONE NUMBER
           </p>
-        )}
-      </div>
 
-      <button
-        type="button"
-        className="relative mt-6 w-[286px] h-[65px] border-0 bg-transparent cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
-        onClick={handleSelectWinner}
-        disabled={isDrawDisabled}
-        aria-label="Select winner"
-      >
-        <img
-          src={assetPaths.images.selectWinnerBtn}
-          alt=""
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          aria-hidden="true"
-        />
-        <span className="relative z-10 italic font-povlar text-xl bg-gradient-to-b from-white to-[#d4d3d3] bg-clip-text text-transparent drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] pt-1">
-          {isDrawing || isSelectingWinner ? 'DRAWING...' : 'SELECT WINNER'}
-        </span>
-      </button>
+          <div className="relative w-full max-w-[550px] h-[53px] flex items-center justify-center">
+            <img
+              src={assetPaths.images.phoneDisplayBox}
+              alt=""
+              className="absolute inset-0 w-full h-full object-fill pointer-events-none"
+              aria-hidden="true"
+            />
+            <p
+              className="relative z-10 font-povlar text-[clamp(1.25rem,2.5vw,1.75rem)] m-0 tracking-wider tabular-nums bg-[linear-gradient(172deg,#000_23%,#5d5d5d_77%)] bg-clip-text text-transparent"
+              aria-live="polite"
+              aria-label={`Phone number: ${phoneText}`}
+            >
+              {phoneText}
+            </p>
+          </div>
 
-      <label
-        className={`mt-4 flex items-center gap-3 bg-[#6e6e6e] px-3 py-2 rounded-[20px] shadow-md transition-colors ${isUploading
-            ? 'cursor-not-allowed opacity-60'
-            : 'cursor-pointer hover:bg-[#5a5a5a]'
+          {isDrawing && (
+            <p className="font-ui text-[#c7bebe] text-xs mt-2 m-0">
+              {phase === "spinning"
+                ? "Drawing winner..."
+                : "Revealing number..."}
+            </p>
+          )}
+        </div>
+
+        <button
+          type="button"
+          className="relative mt-6 w-[286px] h-[65px] border-0 bg-transparent cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
+          onClick={handleSelectWinner}
+          disabled={isDrawDisabled}
+          aria-label="Select winner"
+        >
+          <img
+            src={assetPaths.images.selectWinnerBtn}
+            alt=""
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            aria-hidden="true"
+          />
+          <span className="relative z-10 italic font-povlar text-xl bg-gradient-to-b from-white to-[#d4d3d3] bg-clip-text text-transparent drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] pt-1">
+            {isDrawing || isSelectingWinner ? "DRAWING..." : "SELECT WINNER"}
+          </span>
+        </button>
+
+        <label
+          className={`mt-4 flex items-center gap-3 bg-[#6e6e6e] px-3 py-2 rounded-[20px] shadow-md transition-colors ${
+            isUploading || isDrawDisabled
+              ? "cursor-not-allowed opacity-60"
+              : "cursor-pointer hover:bg-[#5a5a5a]"
           }`}
-      >
-        <img src={assetPaths.images.uploadIcon} alt="" className="w-5 h-5" aria-hidden="true" />
-        <span className="font-supreme-regular text-white text-base underline">
-          {isUploading ? 'Uploading...' : 'Upload File'}
-        </span>
-        <input
-          type="file"
-          accept=".csv,.xlsx,.xls,.txt"
-          className="sr-only"
-          onChange={handleUploadFile}
-          disabled={isUploading}
-          aria-label="Upload participant file"
-        />
-      </label>
-    </section>
+        >
+          <img
+            src={assetPaths.images.uploadIcon}
+            alt=""
+            className="w-5 h-5"
+            aria-hidden="true"
+          />
+          <span className="font-supreme-regular text-white text-base underline">
+            {isUploading ? "Uploading..." : "Upload File"}
+          </span>
+          <input
+            type="file"
+            accept=".csv,.xlsx,.xls,.txt"
+            className="sr-only"
+            onChange={handleUploadFile}
+            disabled={isUploading || isDrawDisabled}
+            aria-label="Upload participant file"
+          />
+        </label>
+      </section>
 
-    <ErrorPopUp
-      error={uploadError}
-      onClose={() => setUploadError(null)}
-    />
+      <ErrorPopUp error={uploadError} onClose={() => setUploadError(null)} />
     </>
-  )
+  );
 }
 
 export default WinnerPanel

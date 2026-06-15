@@ -36,9 +36,7 @@ function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableP
     } finally {
       setIsExporting(false)
     }
-  }
-
-  console.log('historyData: 3333333', historyData)
+  } 
 
   return (
     <aside className="w-[300px] shrink-0">
