@@ -65,7 +65,7 @@ function LoginPage({
           </label>
 
           {error ? (
-            <p className="font-supreme-regular m-0 text-center text-xs text-[#e61d25]">{error}</p>
+            <p className="font-supreme-regular m-0 text-center text-lg  text-[#e61d25]">{error}</p>
           ) : null}
 
           <button
