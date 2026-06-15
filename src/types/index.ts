@@ -12,6 +12,7 @@ export interface Reward {
   image: string
   prizeCode?: string
   prizeType?: WinnerType
+  initialQuantity: number
 }
 
 export interface Participant {
@@ -65,6 +66,7 @@ export interface Prize {
   id: number
   prizeName: string
   quantity: number
+  initialQuantity?: number
   prizeType: WinnerType
   prizeCode: string
 }

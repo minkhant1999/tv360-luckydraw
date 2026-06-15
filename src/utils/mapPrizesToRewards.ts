@@ -18,6 +18,7 @@ export function mapPrizeToReward(prize: Prize, drawn = 0): Reward | null {
     id: config.id,
     name: prize.prizeName,
     quantity: prize.quantity,
+    initialQuantity: prize.initialQuantity ?? prize.quantity,
     drawn,
     image: config.image,
     prizeCode: prize.prizeCode,

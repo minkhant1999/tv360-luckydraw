@@ -111,7 +111,7 @@ function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableP
                   className="grid grid-cols-[24px_minmax(0,1fr)_80px] gap-1.5 items-start"
                 >
                   <span className="font-ui text-white text-[12px] text-center pt-0.5">
-                    {index + 1}
+                    {historyData.length - index}
                   </span>
                   <span className="min-w-0 font-ui text-[12px] leading-snug text-white text-center">
                     {winner.prizeName}

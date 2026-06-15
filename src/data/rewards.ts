@@ -12,6 +12,7 @@ export const rewards: Reward[] = [
     image: prizeJerseyArgentina,
     prizeCode: 'OFFICIAL_JERSEY',
     prizeType: 'WEEKLY',
+    initialQuantity:100,
   },
   {
     id: 'cash-500k',
@@ -21,6 +22,8 @@ export const rewards: Reward[] = [
     image: prizeKyats,
     prizeCode: 'FIVE_LAKHS',
     prizeType: 'WEEKLY',
+    initialQuantity:100,
+
   },
   {
     id: 'cash-100k',
@@ -30,6 +33,8 @@ export const rewards: Reward[] = [
     image: prizeKyats,
     prizeCode: 'ONE_LAKH',
     prizeType: 'WEEKLY',
+    initialQuantity:100,
+
   },
   {
     id: 'tv360-jersey',
@@ -39,5 +44,7 @@ export const rewards: Reward[] = [
     image: prizeTv360Jersey,
     prizeCode: 'TV360_JERSEY',
     prizeType: 'WEEKLY',
+    initialQuantity:100,
+
   },
 ]

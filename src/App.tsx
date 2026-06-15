@@ -120,7 +120,7 @@ function App() {
     setIsCongratsOpen(false)
     setDrawResult(null)
     resetDraw()
-    dispatch(luckyDrawApi.util.invalidateTags(['Participant']))
+    dispatch(luckyDrawApi.util.invalidateTags(['History']))
   }, [resetDraw, dispatch])
 
   const rewardsWithCounts = useMemo(

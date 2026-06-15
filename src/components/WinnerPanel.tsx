@@ -153,11 +153,10 @@ function WinnerPanel({
       </button>
 
       <label
-        className={`mt-4 flex items-center gap-3 bg-[#6e6e6e] px-3 py-2 rounded-[20px] shadow-md transition-colors ${
-          isUploading
+        className={`mt-4 flex items-center gap-3 bg-[#6e6e6e] px-3 py-2 rounded-[20px] shadow-md transition-colors ${isUploading
             ? 'cursor-not-allowed opacity-60'
             : 'cursor-pointer hover:bg-[#5a5a5a]'
-        }`}
+          }`}
       >
         <img src={uploadIcon} alt="" className="w-5 h-5" aria-hidden="true" />
         <span className="font-supreme-regular text-white text-base underline">

@@ -41,7 +41,7 @@ export const luckyDrawApi = baseApi.injectEndpoints({
     getHisotry: builder.query<History[], { type: WinnerType }>({
       query: ({ type }) => `/history?type=${type}`,
       transformResponse: (response: HistoryResponse) => response.result ?? [],
-      providesTags: ['Participant'],
+      providesTags: ['History'],
     }),
     exportWinners: builder.query<Blob, { type: WinnerType }>({
       query: ({ type }) => ({
@@ -69,7 +69,7 @@ export const luckyDrawApi = baseApi.injectEndpoints({
         url: `/select-winner?prize=${prize}&prize-type=${prizeType}`,
         method: 'POST',
       }),
-      invalidatesTags: ['Winner', 'Reward', 'Participant'],
+      invalidatesTags: ['Winner', 'Reward'],
     }),
   }),
 })
