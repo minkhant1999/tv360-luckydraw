@@ -4,6 +4,8 @@ import winnersTag from '../assets/images/winnerstag.webp'
 import { useGetHisotryQuery, useLazyExportWinnersQuery } from '../store/api/luckyDrawApi'
 import type { WinnerType } from '../types'
 import { downloadBlob } from '../utils/downloadBlob'
+import { parseApiError, type PopUpError } from '../utils/parseApiError'
+import ErrorPopUp from '../common/ErrorPopUp'
 
 function maskPhone(phone: string | number): string {
   const digits = String(phone).replace(/\D/g, '')
@@ -20,6 +22,8 @@ interface WinnersTableProps {
 
 function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableProps) {
   const [isExporting, setIsExporting] = useState(false)
+  const [uploadError, setUploadError] = useState<PopUpError | null>(null)
+  
   const { data: historyData = [], isFetching, isError } = useGetHisotryQuery({ type: prizeType })
   const [exportWinners] = useLazyExportWinnersQuery()
 
@@ -28,12 +32,14 @@ function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableP
     try {
       const blob = await exportWinners({ type: prizeType }).unwrap()
       downloadBlob(blob, `winners-${prizeType.toLowerCase()}.xlsx`)
-    } catch {
-      return
+    } catch (error) {
+      setUploadError(parseApiError(error))
     } finally {
       setIsExporting(false)
     }
   }
+
+  console.log('historyData: 3333333', historyData)
 
   return (
     <aside className="w-[300px] shrink-0">
@@ -74,7 +80,8 @@ function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableP
                 Grand
               </button>
             </div>
-            <button
+            {historyData.length > 0 && (
+              <button
               type="button"
               onClick={handleExport}
               disabled={isExporting}
@@ -86,6 +93,7 @@ function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableP
                 {isExporting ? 'Exporting…' : 'Export'}
               </span>
             </button>
+            )}
           </div>
 
           <div className="shrink-0">
@@ -125,6 +133,11 @@ function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableP
           </div>
         </div>
       </div>
+
+      <ErrorPopUp
+        error={uploadError}
+        onClose={() => setUploadError(null)}
+      />
     </aside>
   )
 }

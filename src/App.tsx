@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import backgroundImage from './assets/images/background.webp'
+import { ErrorPopUp } from './common/ErrorPopUp'
 import CongratulationsModal from './components/CongratulationsModal'
 import Footer from './components/Footer'
 import Header from './components/Header'
@@ -14,6 +15,7 @@ import { luckyDrawApi, useGetPrizesQuery } from './store/api/luckyDrawApi'
 import { useAppDispatch } from './store/hooks'
 import type { RewardId, SelectWinnerResult, WinnerType } from './types'
 import { mapPrizesToRewards } from './utils/mapPrizesToRewards'
+import { parseApiError, type PopUpError } from './utils/parseApiError'
 
 function App() {
   const dispatch = useAppDispatch()
@@ -21,14 +23,47 @@ function App() {
   const [drawResult, setDrawResult] = useState<SelectWinnerResult | null>(null)
   const [isCongratsOpen, setIsCongratsOpen] = useState(false)
   const [isSelectingWinner, setIsSelectingWinner] = useState(false)
+  const [isPrizesErrorDismissed, setIsPrizesErrorDismissed] = useState(false)
 
   const isRewardsEnabled =
     session.prizeType === 'WEEKLY' ? session.weeklyUploaded : session.grandUploaded
 
-  const { data: prizesResponse, isLoading: isPrizesLoading } = useGetPrizesQuery(
+  const {
+    data: prizesResponse,
+    isLoading: isPrizesLoading,
+    error: prizesQueryError,
+    isError: isPrizesError,
+  } = useGetPrizesQuery(
     { prizeType: session.prizeType },
     { skip: !isRewardsEnabled },
   )
+
+  useEffect(() => {
+    setIsPrizesErrorDismissed(false)
+  }, [session.prizeType, isRewardsEnabled])
+
+  const prizesPopUpError = useMemo((): PopUpError | null => {
+    if (!isRewardsEnabled || isPrizesErrorDismissed) return null
+
+    if (isPrizesError && prizesQueryError) {
+      return parseApiError(prizesQueryError)
+    }
+
+    if (prizesResponse && !prizesResponse.success) {
+      return {
+        code: prizesResponse.code ?? 'Error',
+        message: prizesResponse.message ?? 'Failed to load prizes.',
+      }
+    }
+
+    return null
+  }, [
+    isRewardsEnabled,
+    isPrizesErrorDismissed,
+    isPrizesError,
+    prizesQueryError,
+    prizesResponse,
+  ])
 
   const apiRewards = useMemo(() => {
     if (!prizesResponse?.success) return []
@@ -208,6 +243,11 @@ function App() {
         open={isCongratsOpen}
         onClose={handleCloseCongrats}
         result={drawResult}
+      />
+
+      <ErrorPopUp
+        error={prizesPopUpError}
+        onClose={() => setIsPrizesErrorDismissed(true)}
       />
     </div>
   )

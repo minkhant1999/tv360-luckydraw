@@ -1,11 +1,13 @@
-import { type ChangeEvent, useEffect } from 'react'
+import { type ChangeEvent, useEffect, useState } from 'react'
 import phoneDisplayBox from '../assets/images/phone-display-box.svg'
 import selectWinnerBtn from '../assets/images/select-winner-btn.svg'
 import prizePedestal from '../assets/images/prize-pedestal.webp'
 import uploadIcon from '../assets/images/upload-icon.svg'
+import { ErrorPopUp } from '../common/ErrorPopUp'
 import { useImportUsersMutation, useSelectWinnerMutation } from '../store/api/luckyDrawApi'
 import type { DrawPhase, Reward, SelectWinnerResult } from '../types'
 import { formatIsdnForDisplay } from '../utils/normalizePhoneDigits'
+import { parseApiError, type PopUpError } from '../utils/parseApiError'
 
 const PHONE_MASK = '09xxxxxxxxx'
 
@@ -38,6 +40,7 @@ function WinnerPanel({
   onImportSuccess,
   onSelectingWinnerChange,
 }: WinnerPanelProps) {
+  const [uploadError, setUploadError] = useState<PopUpError | null>(null)
   const [importUsers, { isLoading: isUploading }] = useImportUsersMutation()
   const [selectWinner, { isLoading: isSelectingWinner }] = useSelectWinnerMutation()
 
@@ -53,9 +56,14 @@ function WinnerPanel({
       const response = await importUsers(file).unwrap()
       if (response.success) {
         onImportSuccess()
+      } else { 
+        setUploadError({
+          code: response.code ?? 'Error',
+          message: response.message ?? 'Failed to import users.',
+        })
       }
-    } catch (error) {
-      console.error('Failed to import users:', error)
+    } catch (error) { 
+      setUploadError(parseApiError(error))
     } finally {
       event.target.value = ''
     }
@@ -73,8 +81,8 @@ function WinnerPanel({
       if (response.success) {
         onSelectWinner(response.result)
       }
-    } catch (error) {
-      console.error('Failed to select winner:', error)
+    } catch (error) { 
+      setUploadError(parseApiError(error));
     }
   }
 
@@ -83,6 +91,7 @@ function WinnerPanel({
     isDrawing || !selectedReward || !isRewardsEnabled || isSelectingWinner
 
   return (
+    <>
     <section className="winner-panel flex min-w-0 flex-1 flex-col items-center">
       <div className="w-[340px] bg-[#670105] h-[34px] flex items-center justify-center shrink-0">
         <p className="font-supreme-bold text-base m-0 bg-gradient-to-b from-[#ff8a04] to-[#fc0] bg-clip-text text-transparent">
@@ -172,6 +181,12 @@ function WinnerPanel({
         />
       </label>
     </section>
+
+    <ErrorPopUp
+      error={uploadError}
+      onClose={() => setUploadError(null)}
+    />
+    </>
   )
 }
 

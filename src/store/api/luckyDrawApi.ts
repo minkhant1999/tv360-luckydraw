@@ -45,7 +45,7 @@ export const luckyDrawApi = baseApi.injectEndpoints({
     }),
     exportWinners: builder.query<Blob, { type: WinnerType }>({
       query: ({ type }) => ({
-        url: `/history/export?type=${type}`,
+        url: `/history/export?type=sdfafd`,
         responseHandler: (response) => response.blob(),
       }),
     }),
