@@ -25,8 +25,7 @@ function App() {
   const [isSelectingWinner, setIsSelectingWinner] = useState(false)
   const [isPrizesErrorDismissed, setIsPrizesErrorDismissed] = useState(false)
 
-  const isRewardsEnabled =
-    session.prizeType === 'WEEKLY' ? session.weeklyUploaded : session.grandUploaded
+  const isRewardsEnabled = session.weeklyUploaded || session.grandUploaded
 
   const {
     data: prizesResponse,
@@ -188,11 +187,7 @@ function App() {
 
   const handlePrizeTypeChange = useCallback((prizeType: WinnerType) => {
     setSession((current) => {
-      const next = {
-        ...current,
-        prizeType,
-        grandUploaded: prizeType === 'GRAND' ? false : current.grandUploaded,
-      }
+      const next = { ...current, prizeType }
       saveAppSession(next)
       return next
     })
