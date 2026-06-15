@@ -1,4 +1,4 @@
-import selectedArrow from '../assets/images/selected-arrow.svg'
+import { assetPaths } from '../lib/assetPaths'
 import type { Reward, RewardId } from '../types'
 
 interface RewardItemProps {
@@ -70,7 +70,7 @@ function RewardItem({ reward, isSelected, disableSelect, onSelect }: RewardItemP
           </div>
           {isSelected && !disableSelect && (
             <img
-              src={selectedArrow}
+              src={assetPaths.images.selectedArrow}
               alt=""
               className="relative z-10 h-3 w-3 shrink-0 rotate-90"
               aria-hidden="true"

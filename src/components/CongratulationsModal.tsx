@@ -1,6 +1,5 @@
 import { Modal } from 'antd'
-import confetti from '../assets/images/confetti.webp'
-import phoneDisplayBox from '../assets/images/phone-display-box.svg'
+import { assetPaths } from '../lib/assetPaths'
 import type { SelectWinnerResult } from '../types'
 import { getPrizeImageByCode } from '../utils/mapPrizesToRewards'
 import { formatIsdnForDisplay } from '../utils/normalizePhoneDigits'
@@ -48,7 +47,7 @@ function CongratulationsModal({ open, onClose, result }: CongratulationsModalPro
     >
       <div className="relative overflow-hidden rounded-[28px] border-2 border-[#fc0] bg-[#a80000] px-6 pb-8 pt-10 text-center shadow-[0_0_24px_rgba(255,200,0,0.35)]">
         <img
-          src={confetti}
+          src={assetPaths.images.confetti}
           alt=""
           className="pointer-events-none absolute inset-x-0 top-0 z-0 w-full mix-blend-screen"
           aria-hidden="true"
@@ -77,7 +76,7 @@ function CongratulationsModal({ open, onClose, result }: CongratulationsModalPro
 
         <div className="relative z-10 mx-auto mt-6 flex h-[53px] w-full max-w-[320px] items-center justify-center">
           <img
-            src={phoneDisplayBox}
+            src={assetPaths.images.phoneDisplayBox}
             alt=""
             className="absolute inset-0 h-full w-full object-fill pointer-events-none"
             aria-hidden="true"

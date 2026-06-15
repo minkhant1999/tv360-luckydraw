@@ -1,6 +1,7 @@
-import prizeJerseyArgentina from '../assets/images/prize-jersey-argentina.webp'
-import prizeTv360Jersey from '../assets/images/prize-tv360-jersey.webp'
+import { assetPaths } from '../lib/assetPaths'
 import type { Winner } from '../types'
+
+const { prizeJerseyArgentina, prizeTv360Jersey } = assetPaths.images
 
 export const initialWinners: Winner[] = [
   {

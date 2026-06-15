@@ -1,8 +1,5 @@
 import { type ChangeEvent, useEffect, useState } from 'react'
-import phoneDisplayBox from '../assets/images/phone-display-box.svg'
-import selectWinnerBtn from '../assets/images/select-winner-btn.svg'
-import prizePedestal from '../assets/images/prize-pedestal.webp'
-import uploadIcon from '../assets/images/upload-icon.svg'
+import { assetPaths } from '../lib/assetPaths'
 import { ErrorPopUp } from '../common/ErrorPopUp'
 import { useImportUsersMutation, useSelectWinnerMutation } from '../store/api/luckyDrawApi'
 import type { DrawPhase, Reward, SelectWinnerResult } from '../types'
@@ -101,7 +98,7 @@ function WinnerPanel({
 
       <div className="relative mb-1 mt-2 flex h-[clamp(100px,16vh,180px)] w-full shrink-0 justify-center">
         <img
-          src={prizePedestal}
+          src={assetPaths.images.prizePedestal}
           alt=""
           className="absolute bottom-0 w-[340px] max-w-full h-auto pointer-events-none"
           aria-hidden="true"
@@ -122,7 +119,7 @@ function WinnerPanel({
 
         <div className="relative w-full max-w-[550px] h-[53px] flex items-center justify-center">
           <img
-            src={phoneDisplayBox}
+            src={assetPaths.images.phoneDisplayBox}
             alt=""
             className="absolute inset-0 w-full h-full object-fill pointer-events-none"
             aria-hidden="true"
@@ -151,7 +148,7 @@ function WinnerPanel({
         aria-label="Select winner"
       >
         <img
-          src={selectWinnerBtn}
+          src={assetPaths.images.selectWinnerBtn}
           alt=""
           className="absolute inset-0 w-full h-full pointer-events-none"
           aria-hidden="true"
@@ -167,7 +164,7 @@ function WinnerPanel({
             : 'cursor-pointer hover:bg-[#5a5a5a]'
           }`}
       >
-        <img src={uploadIcon} alt="" className="w-5 h-5" aria-hidden="true" />
+        <img src={assetPaths.images.uploadIcon} alt="" className="w-5 h-5" aria-hidden="true" />
         <span className="font-supreme-regular text-white text-base underline">
           {isUploading ? 'Uploading...' : 'Upload File'}
         </span>

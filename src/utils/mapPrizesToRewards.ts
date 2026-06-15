@@ -1,7 +1,7 @@
-import prizeJerseyArgentina from '../assets/images/prize-jersey-argentina.webp'
-import prizeKyats from '../assets/images/prize-kyats.webp'
-import prizeTv360Jersey from '../assets/images/prize-tv360-jersey.webp'
+import { assetPaths } from '../lib/assetPaths'
 import type { Prize, Reward, RewardId } from '../types'
+
+const { prizeJerseyArgentina, prizeKyats, prizeTv360Jersey } = assetPaths.images
 
 const PRIZE_CONFIG: Record<string, { id: RewardId; image: string }> = {
   OFFICIAL_JERSEY: { id: 'jersey-player', image: prizeJerseyArgentina },

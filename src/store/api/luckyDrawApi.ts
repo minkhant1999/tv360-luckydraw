@@ -17,49 +17,49 @@ export const luckyDrawApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (body) => ({
-        url: '/auth/login',
-        method: 'POST',
+        url: "/auth/login",
+        method: "POST",
         body,
       }),
     }),
     getRewards: builder.query<Reward[], void>({
-      query: () => '/rewards',
-      providesTags: ['Reward'],
+      query: () => "/rewards",
+      providesTags: ["Reward"],
     }),
     getPrizes: builder.query<PrizesResponse, { prizeType: WinnerType }>({
       query: ({ prizeType }) => `/prize?prize-type=${prizeType}`,
-      providesTags: ['Reward'],
+      providesTags: ["Reward"],
     }),
     getWinners: builder.query<Winner[], void>({
-      query: () => '/winners',
-      providesTags: ['Winner'],
+      query: () => "/winners",
+      providesTags: ["Winner"],
     }),
     getParticipants: builder.query<Participant[], void>({
-      query: () => '/participants',
-      providesTags: ['Participant'],
+      query: () => "/participants",
+      providesTags: ["Participant"],
     }),
     getHisotry: builder.query<History[], { type: WinnerType }>({
       query: ({ type }) => `/history?type=${type}`,
       transformResponse: (response: HistoryResponse) => response.result ?? [],
-      providesTags: ['History'],
+      providesTags: ["History"],
     }),
     exportWinners: builder.query<Blob, { type: WinnerType }>({
       query: ({ type }) => ({
-        url: `/history/export?type=sdfafd`,
+        url: `/history/export?type=${type}`,
         responseHandler: (response) => response.blob(),
       }),
     }),
     importUsers: builder.mutation<ImportUsersResponse, File>({
       query: (file) => {
-        const formData = new FormData()
-        formData.append('file', file)
+        const formData = new FormData();
+        formData.append("file", file);
         return {
-          url: '/uploadfile/import-users',
-          method: 'POST',
+          url: "/uploadfile/import-users",
+          method: "POST",
           body: formData,
-        }
+        };
       },
-      invalidatesTags: ['Participant', 'Reward'],
+      invalidatesTags: ["Participant", "Reward"],
     }),
     selectWinner: builder.mutation<
       SelectWinnerResponse,
@@ -67,12 +67,12 @@ export const luckyDrawApi = baseApi.injectEndpoints({
     >({
       query: ({ prize, prizeType }) => ({
         url: `/select-winner?prize=${prize}&prize-type=${prizeType}`,
-        method: 'POST',
+        method: "POST",
       }),
-      invalidatesTags: ['Winner', 'Reward'],
+      invalidatesTags: ["Winner", "Reward"],
     }),
   }),
-})
+});
 
 export const {
   useLoginMutation,

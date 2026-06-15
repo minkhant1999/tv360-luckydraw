@@ -1,7 +1,7 @@
-import prizeJerseyArgentina from '../assets/images/prize-jersey-argentina.webp'
-import prizeKyats from '../assets/images/prize-kyats.webp'
-import prizeTv360Jersey from '../assets/images/prize-tv360-jersey.webp'
+import { assetPaths } from '../lib/assetPaths'
 import type { Reward } from '../types'
+
+const { prizeJerseyArgentina, prizeKyats, prizeTv360Jersey } = assetPaths.images
 
 export const rewards: Reward[] = [
   {

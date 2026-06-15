@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import exportIcon from '../assets/images/export-icon.svg'
-import winnersTag from '../assets/images/winnerstag.webp'
+import { assetPaths } from '../lib/assetPaths'
 import { useGetHisotryQuery, useLazyExportWinnersQuery } from '../store/api/luckyDrawApi'
 import type { WinnerType } from '../types'
 import { downloadBlob } from '../utils/downloadBlob'
@@ -46,7 +45,7 @@ function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableP
       <div className={`flex flex-col overflow-hidden rounded-xl bg-[#701e11] ${className ?? 'h-[400px]'}`}>
         <div className="bg-[#963c2e] h-10 flex items-center justify-center shrink-0 rounded-t-xl">
           <img
-            src={winnersTag}
+            src={assetPaths.images.winnersTag}
             alt="WINNERS"
             className="h-[22px] w-auto object-contain"
           />
@@ -88,7 +87,7 @@ function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableP
               className="flex items-center gap-1.5 bg-transparent border-0 cursor-pointer p-0 disabled:cursor-not-allowed disabled:opacity-60"
               aria-label="Export winners"
             >
-              <img src={exportIcon} alt="" className="w-3.5 h-3.5" aria-hidden="true" />
+              <img src={assetPaths.images.exportIcon} alt="" className="w-3.5 h-3.5" aria-hidden="true" />
               <span className="font-supreme-regular font-bold text-[#e61d25] text-xs underline">
                 {isExporting ? 'Exporting…' : 'Export'}
               </span>

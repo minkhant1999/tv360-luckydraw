@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import backgroundImage from './assets/images/background.webp'
+import { assetPaths } from './lib/assetPaths'
 import { ErrorPopUp } from './common/ErrorPopUp'
 import CongratulationsModal from './components/CongratulationsModal'
 import Footer from './components/Footer'
@@ -201,7 +201,7 @@ function App() {
   return (
     <div className="flex h-full min-h-0 flex-col relative overflow-hidden">
       <img
-        src={backgroundImage}
+        src={assetPaths.images.background}
         alt=""
         className="absolute inset-0 w-full h-full object-cover -z-10"
         fetchPriority="high"

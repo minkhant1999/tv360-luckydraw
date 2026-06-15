@@ -1,7 +1,7 @@
 import { useEffect, useId, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { CloseOutlined } from "@ant-design/icons"; 
-import failIcon from "../assets/images/fail_icon.webp";
+import { assetPaths } from "../lib/assetPaths";
 import { NoWifiIcon } from "./ErrorPopUpIcons";
 
 type ErrorPopUpProps = {
@@ -117,7 +117,7 @@ export function ErrorPopUp({
           <NoWifiIcon className="max-h-[120px] w-full max-w-[155px]" />
         ) : (
           <img
-            src={failIcon}
+            src={assetPaths.images.failIcon}
             alt="Error"
             className="max-w-[155px] object-contain"
           />

@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react'
-import backgroundImage from '../assets/images/background.webp'
+import { assetPaths } from '../lib/assetPaths'
 
 interface LoginPageProps {
   username: string
@@ -23,7 +23,7 @@ function LoginPage({
   return (
     <div className="relative flex h-full min-h-dvh items-center justify-center overflow-hidden">
       <img
-        src={backgroundImage}
+        src={assetPaths.images.background}
         alt=""
         className="absolute inset-0 h-full w-full object-cover -z-10"
         fetchPriority="high"
