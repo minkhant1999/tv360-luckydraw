@@ -162,7 +162,7 @@ function WinnerPanel({
 
         <label
           className={`mt-4 flex items-center gap-3 bg-[#6e6e6e] px-3 py-2 rounded-[20px] shadow-md transition-colors ${
-            isUploading || isDrawDisabled
+            isUploading || isDrawing || isSelectingWinner
               ? "cursor-not-allowed opacity-60"
               : "cursor-pointer hover:bg-[#5a5a5a]"
           }`}
@@ -181,7 +181,7 @@ function WinnerPanel({
             accept=".csv,.xlsx,.xls,.txt"
             className="sr-only"
             onChange={handleUploadFile}
-            disabled={isUploading || isDrawDisabled}
+            disabled={isUploading || isDrawing || isSelectingWinner}
             aria-label="Upload participant file"
           />
         </label>
