@@ -10,10 +10,15 @@ function Footer() {
         aria-hidden="true"
       />
       <div className="relative z-10 flex h-full items-end justify-between px-[90px] max-[1200px]:px-8">
-        <img
+        {/* <img
           src={assetPaths.images.wcPackages}
           alt="World Cup Packages"
           className="h-[clamp(130px,26vh,240px)] w-auto shrink-0 -translate-y-3 object-contain object-left-bottom"
+        /> */}
+        <img
+          src={assetPaths.images.wcPackages}
+          alt="World Cup Packages"
+          className="h-[clamp(110px,22vh,200px)] w-auto shrink-0 -translate-y-3 object-contain object-left-bottom"
         />
         <img
           src={assetPaths.images.subTagEng}
@@ -26,11 +31,10 @@ function Footer() {
             alt="QR code for tv360.mytel.com.mm/app"
             className="mb-2 h-[clamp(40px,6vh,56px)] w-auto object-contain"
           />
-
         </div>
       </div>
     </footer>
-  )
+  );
 }
 
 export default Footer

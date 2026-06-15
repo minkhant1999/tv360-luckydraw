@@ -112,8 +112,8 @@ function WinnerPanel({
           {selectedReward && (
             <img
               src={selectedReward.image}
-              alt={selectedReward.name}
-              className="relative z-10 mt-6 h-[clamp(80px,14vh,150px)] w-auto object-contain drop-shadow-lg"
+              alt={selectedReward.name} 
+              className="relative z-10 mt-6 h-[clamp(80px,14vh,150px)] w-auto object-contain drop-shadow-lg scale-125"
             />
           )}
         </div>

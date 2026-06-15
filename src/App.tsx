@@ -203,7 +203,7 @@ function App() {
       />
 
       <Header />
-      <Tagline />
+      {/* <Tagline /> */}
 
       <main className="flex min-h-0 flex-1 items-start justify-center gap-6 px-[90px] py-[clamp(0.5rem,2vh,1.5625rem)] max-[1200px]:gap-4 max-[1200px]:px-8">
         <RewardsList
