@@ -24,6 +24,7 @@ interface WinnerPanelProps {
   onSelectWinner: (result: SelectWinnerResult) => void
   onImportSuccess: () => void
   onSelectingWinnerChange: (isSelecting: boolean) => void
+  onImportingChange: (isImporting: boolean) => void
 }
 
 function WinnerPanel({
@@ -36,6 +37,7 @@ function WinnerPanel({
   onSelectWinner,
   onImportSuccess,
   onSelectingWinnerChange,
+  onImportingChange,
 }: WinnerPanelProps) {
   const [uploadError, setUploadError] = useState<PopUpError | null>(null)
   const [importUsers, { isLoading: isUploading }] = useImportUsersMutation()
@@ -44,6 +46,10 @@ function WinnerPanel({
   useEffect(() => {
     onSelectingWinnerChange(isSelectingWinner)
   }, [isSelectingWinner, onSelectingWinnerChange])
+
+  useEffect(() => {
+    onImportingChange(isUploading)
+  }, [isUploading, onImportingChange])
 
   const handleUploadFile = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -85,7 +91,7 @@ function WinnerPanel({
 
   const phoneText = formatPhoneDisplay(display, phase, winnerIsdn ?? undefined)
   const isDrawDisabled =
-    isDrawing || !selectedReward || !isRewardsEnabled || isSelectingWinner 
+    isDrawing || !selectedReward || !isRewardsEnabled || isSelectingWinner || isUploading
 
   return (
     <>
