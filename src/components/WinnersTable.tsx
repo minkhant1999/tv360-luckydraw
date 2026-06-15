@@ -22,7 +22,7 @@ interface WinnersTableProps {
 function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableProps) {
   const [isExporting, setIsExporting] = useState(false)
   const [uploadError, setUploadError] = useState<PopUpError | null>(null)
-  
+
   const { data: historyData = [], isFetching, isError } = useGetHisotryQuery({ type: prizeType })
   const [exportWinners] = useLazyExportWinnersQuery()
 
@@ -36,7 +36,7 @@ function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableP
     } finally {
       setIsExporting(false)
     }
-  } 
+  }
 
   return (
     <aside className="w-[300px] shrink-0">
@@ -79,17 +79,17 @@ function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableP
             </div>
             {historyData.length > 0 && (
               <button
-              type="button"
-              onClick={handleExport}
-              disabled={isExporting}
-              className="flex items-center gap-1.5 bg-transparent border-0 cursor-pointer p-0 disabled:cursor-not-allowed disabled:opacity-60"
-              aria-label="Export winners"
-            >
-              <img src={assetPaths.images.exportIcon} alt="" className="w-3.5 h-3.5" aria-hidden="true" />
-              <span className="font-supreme-regular font-bold text-[#e61d25] text-xs underline">
-                {isExporting ? 'Exporting…' : 'Export'}
-              </span>
-            </button>
+                type="button"
+                onClick={handleExport}
+                disabled={isExporting}
+                className="flex items-center gap-1.5 bg-transparent border-0 cursor-pointer p-0 disabled:cursor-not-allowed disabled:opacity-60"
+                aria-label="Export winners"
+              >
+                <img src={assetPaths.images.exportIcon} alt="" className="w-3.5 h-3.5" aria-hidden="true" />
+                <span className="font-supreme-regular font-bold text-[#e61d25] text-xs underline">
+                  {isExporting ? 'Exporting…' : 'Export'}
+                </span>
+              </button>
             )}
           </div>
 
@@ -116,7 +116,7 @@ function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableP
                   className="grid grid-cols-[24px_minmax(0,1fr)_80px] gap-1.5 items-start"
                 >
                   <span className="font-ui text-white text-[12px] text-center pt-0.5">
-                    {historyData.length - index}
+                    {index + 1}
                   </span>
                   <span className="min-w-0 font-ui text-[12px] leading-snug text-white text-center">
                     {winner.prizeName}
