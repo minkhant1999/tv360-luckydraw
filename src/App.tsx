@@ -33,8 +33,7 @@ function App() {
     error: prizesQueryError,
     isError: isPrizesError,
   } = useGetPrizesQuery(
-    { prizeType: session.prizeType },
-    { skip: !isRewardsEnabled },
+    { prizeType: session.prizeType }, 
   )
 
   useEffect(() => {
@@ -211,7 +210,7 @@ function App() {
           rewards={rewardsWithCounts}
           selectedRewardId={session.selectedRewardId}
           onSelectReward={handleSelectReward}
-          disableSelect={!isRewardsEnabled || isPrizesLoading || isDrawing || isSelectingWinner}
+          disableSelect={isPrizesLoading || isDrawing || isSelectingWinner}
           isLoading={isPrizesLoading}
         />
         <WinnerPanel
@@ -220,7 +219,7 @@ function App() {
           phase={phase}
           winnerIsdn={winnerIsdn}
           isDrawing={isDrawing}
-          isRewardsEnabled={isRewardsEnabled && !isPrizesLoading}
+          isRewardsEnabled={!isPrizesLoading}
           onSelectWinner={handleSelectWinner}
           onImportSuccess={handleImportSuccess}
           onSelectingWinnerChange={setIsSelectingWinner}
