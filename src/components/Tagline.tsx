@@ -1,4 +1,4 @@
-import { assetPaths } from '../lib/assetPaths'
+// import { assetPaths } from '../lib/assetPaths'
 
 function Tagline() {
   return (
