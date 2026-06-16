@@ -1,8 +1,11 @@
 export type RewardId =
-  | 'jersey-player'
-  | 'cash-500k'
-  | 'cash-100k'
-  | 'tv360-jersey'
+  | "jersey-player"
+  | "cash-500k"
+  | "cash-100k"
+  | "tv360-jersey"
+  | "cash-300k"
+  | "cash-1M"
+  | "gold"
 
 export interface Reward {
   id: RewardId

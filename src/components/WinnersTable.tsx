@@ -36,7 +36,7 @@ function WinnersTable({ prizeType, onPrizeTypeChange, className }: WinnersTableP
     } finally {
       setIsExporting(false)
     }
-  }
+  } 
 
   return (
     <aside className="w-[300px] shrink-0">

@@ -98,7 +98,7 @@ function RewardsList({
   disableSelect = true,
   isLoading = false,
   className,
-}: RewardsListProps) {
+}: RewardsListProps) { 
   return (
     <aside className="w-[333px] shrink-0">
       <div className={`flex flex-col overflow-hidden rounded-xl border border-[#ff2e33] bg-[#7a0513] shadow-[1px_4px_24px_rgba(0,0,0,0.25)] ${className ?? 'h-[430px]'}`}>

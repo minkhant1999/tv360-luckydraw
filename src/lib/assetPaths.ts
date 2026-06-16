@@ -20,5 +20,6 @@ export const assetPaths = {
     wcLogo: 'assets/images/wc-logo.webp',
     wcPackages: 'assets/images/wc-packages.webp',
     winnersTag: 'assets/images/winnerstag.webp',
+    gold: 'assets/images/gold.webp'
   },
 } as const
