@@ -14,8 +14,8 @@ type AuthSliceState = {
 }
 
 const rawBaseQuery = fetchBaseQuery({
-  // baseUrl: import.meta.env.VITE_API_BASE_URL ?? 'https://apis.mytel.com.mm/lucky-cup/api/v1',
-  baseUrl: import.meta.env.VITE_API_BASE_URL ?? 'http://10.201.234.135:8889/lucky-cup/api/v1',
+  baseUrl: import.meta.env.VITE_API_BASE_URL ?? 'https://apis.mytel.com.mm/lucky-cup/api/v1',
+  // baseUrl: import.meta.env.VITE_API_BASE_URL ?? 'http://10.201.234.135:8889/lucky-cup/api/v1',
   
   prepareHeaders: (headers, { getState }) => {
     const { token } = (getState() as AuthSliceState).auth
